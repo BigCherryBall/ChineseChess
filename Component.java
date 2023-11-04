@@ -33,4 +33,6 @@ class MoveInfo
     int new_x;
     int new_y;
     Chess target;
+    /*是否移出了被限制的区域，比如士象帅*/
+    boolean out_local;
 }

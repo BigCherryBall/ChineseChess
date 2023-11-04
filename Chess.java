@@ -10,23 +10,33 @@ public abstract class Chess {
 
     public MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
     {
-        boolean legal = this.isLegal(dir, where, map);
+        boolean is_legal = false;
         Chess target = null;
 
-        if(!legal)
+        this.init_info();
+        is_legal = this.isLegal(dir, where, map);
+        if(!is_legal)
+        {
+            throw new CommandExcept();
+        }
+        if(this.info.out_local)
         {
             throw new CommandExcept();
         }
 
-        target = map[info.new_x][info.new_y];
+        target = map[this.info.new_x][this.info.new_y];
         if (target != null && target.team.equals(this.team))
         {
             throw new MoveExcept();
         }
 
+        map[this.info.new_x][this.info.new_y] = this;
+        map[this.pos.x][this.pos.y] = null;
+
         this.info.target = target;
         this.info.x = this.pos.x;
         this.info.y = this.pos.y;
+        this.updatePos(this.info.new_x, this.info.new_y);
         return this.info;
     }
 
@@ -122,6 +132,12 @@ public abstract class Chess {
         }
 
         return -1;
+    }
+
+    protected void init_info()
+    {
+        this.info.out_local = false;
+        this.info.target = null;
     }
 
     @Override
