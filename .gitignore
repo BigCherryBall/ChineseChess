@@ -20,3 +20,7 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+.idea
+test.java
+out
+ChineseChess.iml

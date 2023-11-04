@@ -6,10 +6,31 @@ public abstract class Chess {
     public Vector2 pos;
     public Vector2 init_pos;
     public BufferedImage img;
+    protected MoveInfo info;
 
-    public abstract MoveInfo move(String command, Chess[][] map);
+    public MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
+    {
+        boolean legal = this.isLegal(dir, where, map);
+        Chess target = null;
 
-    public abstract MoveInfo isLegal(String command, Chess[][] map);
+        if(!legal)
+        {
+            throw new CommandExcept();
+        }
+
+        target = map[info.new_x][info.new_y];
+        if (target != null && target.team.equals(this.team))
+        {
+            throw new MoveExcept();
+        }
+
+        this.info.target = target;
+        this.info.x = this.pos.x;
+        this.info.y = this.pos.y;
+        return this.info;
+    }
+
+    protected abstract boolean isLegal(String dir, String where, Chess[][] map);
 
     /*
      * 每次移动记得更新位置
@@ -115,7 +136,9 @@ public abstract class Chess {
         this.init_pos = init_pos;
         this.pos = new Vector2(init_pos.x, init_pos.y);
         this.img = image;
+        this.info = new MoveInfo();
     }
+
 
     public static int getDisByNum(String num) {
         return switch (num) {
