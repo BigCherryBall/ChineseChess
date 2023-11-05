@@ -1,5 +1,4 @@
-
-
+package ChineseChess;
 /**
  * ChessExcept
  */

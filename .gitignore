@@ -24,3 +24,6 @@ TestResults.xml
 test.java
 out
 ChineseChess.iml
+Main.java
+test
+.gitignore

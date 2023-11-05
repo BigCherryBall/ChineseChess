@@ -1,12 +1,16 @@
+package ChineseChess;
+
 import java.awt.image.BufferedImage;
 
-public abstract class Chess {
+public abstract class Chess
+{
     public String name;
     public Team team;
     public Vector2 pos;
     public Vector2 init_pos;
     public BufferedImage img;
     protected MoveInfo info;
+    public boolean normal_chess = true;
 
     public MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
     {
@@ -15,11 +19,11 @@ public abstract class Chess {
 
         this.init_info();
         is_legal = this.isLegal(dir, where, map);
-        if(!is_legal)
+        if (!is_legal)
         {
             throw new CommandExcept();
         }
-        if(this.info.out_local)
+        if (this.info.out_local && this.normal_chess)
         {
             throw new CommandExcept();
         }
@@ -60,78 +64,107 @@ public abstract class Chess {
         this.pos.y = this.init_pos.y;
     }
 
-    public int getCowByNum(String num) {
-        switch (num) {
-            case "1", "一" -> {
-                if (this.team == Team.red) {
+    public int getCowByNum(String num)
+    {
+        switch (num)
+        {
+            case "1", "一" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 8;
                 }
-                else {
+                else
+                {
                     return 0;
                 }
             }
-            case "2", "二" -> {
-                if (this.team == Team.red) {
+            case "2", "二" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 7;
                 }
-                else {
+                else
+                {
                     return 1;
                 }
             }
-            case "3", "三" -> {
-                if (this.team == Team.red) {
+            case "3", "三" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 6;
                 }
-                else {
+                else
+                {
                     return 2;
                 }
             }
-            case "4", "四" -> {
-                if (this.team == Team.red) {
+            case "4", "四" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 5;
                 }
-                else {
+                else
+                {
                     return 3;
                 }
             }
-            case "5", "五" -> {
+            case "5", "五" ->
+            {
                 return 4;
             }
-            case "6", "六" -> {
-                if (this.team == Team.red) {
+            case "6", "六" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 3;
                 }
-                else {
+                else
+                {
                     return 5;
                 }
             }
-            case "7", "七" -> {
-                if (this.team == Team.red) {
+            case "7", "七" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 2;
                 }
-                else {
+                else
+                {
                     return 6;
                 }
             }
-            case "8", "八" -> {
-                if (this.team == Team.red) {
+            case "8", "八" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 1;
                 }
-                else {
+                else
+                {
                     return 7;
                 }
             }
-            case "9", "九" -> {
-                if (this.team == Team.red) {
+            case "9", "九" ->
+            {
+                if (this.team == Team.red)
+                {
                     return 0;
                 }
-                else {
+                else
+                {
                     return 8;
                 }
             }
+            default ->
+            {
+                return -1;
+            }
         }
-
-        return -1;
     }
 
     protected void init_info()
@@ -141,7 +174,8 @@ public abstract class Chess {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return this.team.toString() + ":" + this.name;
     }
 
@@ -156,19 +190,22 @@ public abstract class Chess {
     }
 
 
-    public static int getDisByNum(String num) {
-        return switch (num) {
-            case "1", "一" -> 1;
-            case "2", "二" -> 2;
-            case "3", "三" -> 3;
-            case "4", "四" -> 4;
-            case "5", "五" -> 5;
-            case "6", "六" -> 6;
-            case "7", "七" -> 7;
-            case "8", "八" -> 8;
-            case "9", "九" -> 9;
-            default ->       -1;
-        };
+
+    public static int getDisByNum(String num)
+    {
+        return switch (num)
+                {
+                    case "1", "一" -> 1;
+                    case "2", "二" -> 2;
+                    case "3", "三" -> 3;
+                    case "4", "四" -> 4;
+                    case "5", "五" -> 5;
+                    case "6", "六" -> 6;
+                    case "7", "七" -> 7;
+                    case "8", "八" -> 8;
+                    case "9", "九" -> 9;
+                    default -> -1;
+                };
     }
 
 }

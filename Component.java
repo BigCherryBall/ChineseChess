@@ -1,5 +1,4 @@
-
-
+package ChineseChess;
 class Vector2 
 {
     public int x = 0;
