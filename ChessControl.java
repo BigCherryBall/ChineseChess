@@ -2,30 +2,11 @@ package ChineseChess;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 
-public class ChessControl 
-{
-    /*--------------------------------------
-     * private静态变量
-    ----------------------------------------*/
-
-    /* 路径分隔符 */
-    private static String separator = System.getProperty("path.separator");
-    /* 图片根目录 */
-    private static String img_dir = System.getProperty("user.dir");
-    /* 棋子根目录 */
-    private static String chess_dir = img_dir + separator + "chess";
-    /* 棋盘根目录 */
-    private static String map_dir = img_dir + separator + "chess";
-    /* 走子提示根目录 */
-    private static String remind_dir = img_dir + separator + "moveRemind";
-    /* 输出根目录 */
-    private static String out_dir = img_dir + separator + "out";
 public class ChessControl 
 {
     /*--------------------------------------
@@ -51,31 +32,6 @@ public class ChessControl
     ----------------------------------------*/
     /*如果开启，那么对于士象炮帅的移动可以走出固定区域，参考翻翻棋*/
     public boolean wan_ning = false;
-
-    /*该谁走棋了*/
-    public Turn turn;
-    /*当前棋局状态*/
-    public State state;
-    /*是否结束*/
-    public boolean over;
-
-    /*步数统计*/
-    public int step;
-    /*--------
-     * 以下变量在start方法中不重新赋值
-     * -------*/
-    /*棋盘风格*/
-    public MapStyle red_map_style;
-    public MapStyle black_map_style;
-    /*棋子风格*/
-    public ChessStyle red_chess_style;
-    public ChessStyle black_chess_style;
-    /*是否盲棋*/
-    public boolean blind_chess;
-
-    /*--------------------------------------
-     * private成员变量
-    ----------------------------------------*/
 
     /*该谁走棋了*/
     public Turn turn;
@@ -211,26 +167,145 @@ public class ChessControl
         this.last_step_use_time = 0;
     }
 
+    public void move(String cmd) throws ChessNotFindExcept, CommandExcept, MoveExcept
+    {
+        String one;
+        String two;
+        String three;
+        String four;
+        Chess chess = null;
+
+        /*--------------------命令效验---------------------*/
+        if(cmd == null || cmd.length() != 4)
+        {
+            throw new CommandExcept();
+        }
+        
+        one   = String.valueOf(cmd.charAt(0));
+        two   = String.valueOf(cmd.charAt(1));
+        three = String.valueOf(cmd.charAt(2));
+        four  = String.valueOf(cmd.charAt(3));
+
+        if(!("进".equals(three) || "退".equals(three) || "平".equals(three)))
+        {
+            throw new CommandExcept();
+        }
+        /*--------------------寻找棋子---------------------*/
+        
+        if("前".equals(one) || "后".equals(one))
+        {
+            chess = this.findChessSpec(one, two);
+            
+        }
+        else
+        {
+            chess = this.findChessNormal(one, two);
+        }
+        if(chess == null)
+        {
+            throw new ChessNotFindExcept();
+        }
+
+        /*--------------------进行移动---------------------*/
+        if(!this.moveChess(chess, three, four))
+        {
+            
+        }
+
+
+    }
+
+    public void outMap()
+    {
+
+    }
+
     public Chess[][] getMap()
     {
         return this.map;
     }
 
-    private BufferedImage getImage(String name)
+    private Chess findChessNormal(String name, String cow)
+    {
+        Chess chess = null;
+        //int cow = Chess.getCowByNum(this.turn, cow);
+
+        return null;
+
+    }
+
+    private Chess findChessSpec(String dir, String name)
+    {
+        return null;
+
+    }
+
+    private boolean moveChess(Chess chess, String dir, String where) throws MoveExcept, CommandExcept
+    {
+        chess.move(dir, where, this.map);
+
+        return true;
+    }
+
+    private BufferedImage getImage(Team belong, String chess_name)
     {
         try
         {
             switch (chess_name)
             {
                 case "车":
-                    return ImageIO.read(new File("background.jpg"));
+                    return this.combinedChessPath(belong, "cannon.png");
+                case "马":
+                    return this.combinedChessPath(belong, "knight.png");
+                case "炮":
+                    return this.combinedChessPath(belong, "rook.png");
+                case "相", "象":
+                    return this.combinedChessPath(belong, "elephant.png");
+                case "士", "仕":
+                    return this.combinedChessPath(belong, "mandarin.png");
+                case "兵", "卒":
+                    return this.combinedChessPath(belong, "pawn.png");
+                case "帅", "将":
+                    return this.combinedChessPath(belong, "king.png");
+                default:
+                {
+                    this.succ_load = false;
+                    return null;
+                }
             }
         }
         catch (ImageNotFindExcept e)
         {
-            e.printStackTrace();
-
+            this.succ_load = false;
+            System.out.println(e);
         }
         return null;
     }
+
+    private BufferedImage combinedChessPath(Team belong, String chess_ing_name) throws ImageNotFindExcept
+    {
+        try
+        {
+            if(belong.equals(Team.red))
+            {
+                return ImageIO.read(new File(chess_dir + separator + this.red_chess_style.toString() + separator + "red_" + chess_ing_name));
+            }
+            else
+            {
+                return ImageIO.read(new File(chess_dir + separator + this.black_chess_style.toString() + separator + "black_" + chess_ing_name));
+            }
+
+        }
+        catch(IOException e)
+        {
+            throw new ImageNotFindExcept(chess_ing_name);
+        }
+        
+    }
+
+    private BufferedImage getMapImage()
+    {
+        return null;
+    }
+
 }
