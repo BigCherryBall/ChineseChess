@@ -12,7 +12,7 @@ public abstract class Chess
     protected MoveInfo info;
     public boolean normal_chess = true;
 
-    public MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
+    public final MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
     {
         boolean is_legal = false;
         Chess target = null;
@@ -49,7 +49,7 @@ public abstract class Chess
     /*
      * 每次移动记得更新位置
      */
-    public void updatePos(int new_x, int new_y)
+    public final void updatePos(int new_x, int new_y)
     {
         this.pos.x = new_x;
         this.pos.y = new_y;
@@ -58,13 +58,13 @@ public abstract class Chess
     /*
      * 回到初始位置
      */
-    public void backToInitPos()
+    public final void backToInitPos()
     {
         this.pos.x = this.init_pos.x;
         this.pos.y = this.init_pos.y;
     }
 
-    public int getCowByNum(String num)
+    public final int getCowByNum(String num)
     {
         switch (num)
         {
@@ -167,7 +167,7 @@ public abstract class Chess
         }
     }
 
-    protected void init_info()
+    protected final void init_info()
     {
         this.info.out_local = false;
         this.info.target = null;
@@ -206,6 +206,109 @@ public abstract class Chess
                     case "9", "九" -> 9;
                     default -> -1;
                 };
+    }
+
+    public static int getCowByNum(Team team, String num)
+    {
+        switch (num)
+        {
+            case "1", "一" ->
+            {
+                if (team == Team.red)
+                {
+                    return 8;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            case "2", "二" ->
+            {
+                if (team == Team.red)
+                {
+                    return 7;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+            case "3", "三" ->
+            {
+                if (team == Team.red)
+                {
+                    return 6;
+                }
+                else
+                {
+                    return 2;
+                }
+            }
+            case "4", "四" ->
+            {
+                if (team == Team.red)
+                {
+                    return 5;
+                }
+                else
+                {
+                    return 3;
+                }
+            }
+            case "5", "五" ->
+            {
+                return 4;
+            }
+            case "6", "六" ->
+            {
+                if (team == Team.red)
+                {
+                    return 3;
+                }
+                else
+                {
+                    return 5;
+                }
+            }
+            case "7", "七" ->
+            {
+                if (team == Team.red)
+                {
+                    return 2;
+                }
+                else
+                {
+                    return 6;
+                }
+            }
+            case "8", "八" ->
+            {
+                if (team == Team.red)
+                {
+                    return 1;
+                }
+                else
+                {
+                    return 7;
+                }
+            }
+            case "9", "九" ->
+            {
+                if (team == Team.red)
+                {
+                    return 0;
+                }
+                else
+                {
+                    return 8;
+                }
+            }
+            default ->
+            {
+                return -1;
+            }
+        }
     }
 
 }

@@ -51,3 +51,11 @@ class BackExcept extends ChessExcept
         super("当前步不是最新步，无法悔棋");
     }
 }
+
+class ImageNotFindExcept extends ChessExcept
+{
+    public ImageNotFindExcept(String notice)
+    {
+        super("[error : ImageNotFind] 图片没有找到:" + notice);
+    }
+}

@@ -2,16 +2,105 @@ package ChineseChess;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 
 
-public class ChessControl {
+public class ChessControl 
+{
+    /*--------------------------------------
+     * private静态变量
+    ----------------------------------------*/
+
+    /* 路径分隔符 */
+    private static String separator = System.getProperty("path.separator");
+    /* 图片根目录 */
+    private static String img_dir = System.getProperty("user.dir");
+    /* 棋子根目录 */
+    private static String chess_dir = img_dir + separator + "chess";
+    /* 棋盘根目录 */
+    private static String map_dir = img_dir + separator + "chess";
+    /* 走子提示根目录 */
+    private static String remind_dir = img_dir + separator + "moveRemind";
+    /* 输出根目录 */
+    private static String out_dir = img_dir + separator + "out";
+public class ChessControl 
+{
+    /*--------------------------------------
+     * private静态变量
+    ----------------------------------------*/
+
+    /* 路径分隔符 */
+    private static String separator = System.getProperty("path.separator");
+    /* 图片根目录 */
+    private static String img_dir = System.getProperty("user.dir");
+    /* 棋子根目录 */
+    private static String chess_dir = img_dir + separator + "chess";
+    /* 棋盘根目录 */
+    private static String map_dir = img_dir + separator + "chess";
+    /* 走子提示根目录 */
+    private static String remind_dir = img_dir + separator + "moveRemind";
+    /* 输出根目录 */
+    private static String out_dir = img_dir + separator + "out";
 
 
-    /*挖坑用，如果开启，那么对于士象炮帅可以移除固定区域，参考翻翻棋*/
+    /*--------------------------------------
+     * public成员变量
+    ----------------------------------------*/
+    /*如果开启，那么对于士象炮帅的移动可以走出固定区域，参考翻翻棋*/
     public boolean wan_ning = false;
+
+    /*该谁走棋了*/
+    public Turn turn;
+    /*当前棋局状态*/
+    public State state;
+    /*是否结束*/
+    public boolean over;
+
+    /*步数统计*/
+    public int step;
+    /*--------
+     * 以下变量在start方法中不重新赋值
+     * -------*/
+    /*棋盘风格*/
+    public MapStyle red_map_style;
+    public MapStyle black_map_style;
+    /*棋子风格*/
+    public ChessStyle red_chess_style;
+    public ChessStyle black_chess_style;
+    /*是否盲棋*/
+    public boolean blind_chess;
+
+    /*--------------------------------------
+     * private成员变量
+    ----------------------------------------*/
+
+    /*该谁走棋了*/
+    public Turn turn;
+    /*当前棋局状态*/
+    public State state;
+    /*是否结束*/
+    public boolean over;
+
+    /*步数统计*/
+    public int step;
+    /*--------
+     * 以下变量在start方法中不重新赋值
+     * -------*/
+    /*棋盘风格*/
+    public MapStyle red_map_style;
+    public MapStyle black_map_style;
+    /*棋子风格*/
+    public ChessStyle red_chess_style;
+    public ChessStyle black_chess_style;
+    /*是否盲棋*/
+    public boolean blind_chess;
+
+    /*--------------------------------------
+     * private成员变量
+    ----------------------------------------*/
     /*
     * 实时棋盘，是一个二维的列表，列表里面是棋子对象的引用，没有棋子的地方是None。
     * 通过name获取棋子的名字，toString方法输出格式为红/黑+棋子名字（注意红黑方的部分棋子名称不同）
@@ -20,18 +109,6 @@ public class ChessControl {
     private Chess[][] map;
     /*棋子对象池,内部访问。初始化位置，只读不改。*/
     private final LinkedList<Chess> chess_list;
-    /*该谁走棋了*/
-    public Turn turn;
-    /*当前棋局状态*/
-    public State state;
-    /*是否结束*/
-    public boolean over;
-    /*获取每一步的移动信息*/
-    private MoveInfo info;
-    /*悔棋是否合法*/
-    private boolean retract_legal;
-    /*步数统计*/
-    public int step;
     /*随机名，用于图片命名；图片名称为seed.jpg*/
     private String seed;
     /*棋局开始时间：ms*/
@@ -44,17 +121,17 @@ public class ChessControl {
     private long black_use_time;
     /*上一步，也就是最新步用时：ms*/
     private long last_step_use_time;
+    /*获取每一步的移动信息*/
+    private MoveInfo info;
+    /*悔棋是否合法*/
+    private boolean retract_legal;
+    /*是否正确加载图片资源*/
+    private boolean succ_load;
+
 
 
     public ChessControl(String seed)
     {
-        this.map = new Chess[10][9];
-        this.chess_list = new LinkedList<>();
-        /*-------------------红方初始化-------------------*/
-        this.chess_list.add(new Car(Team.red, 9, 0, getImage("车")));
-        /*-------------------黑方初始化-------------------*/
-
-
         /*该谁走棋了*/
         this.turn = Turn.red;
         /*当前棋局状态*/
@@ -69,6 +146,23 @@ public class ChessControl {
         this.step = 0;
         /*随机名，用于图片命名；图片名称为seed.jpg*/
         this.seed = seed;
+        /*棋盘风格*/
+        this.red_map_style = MapStyle.defalt;
+        this.black_map_style = MapStyle.defalt;
+        /*棋子风格*/
+        this.red_chess_style = ChessStyle.defalt;
+        this.black_chess_style = ChessStyle.defalt;
+        /*是否盲棋*/
+        this.blind_chess = false;
+
+        /* 棋盘 */
+        this.map = new Chess[10][9];
+        /* 棋子对象池 */
+        this.chess_list = new LinkedList<>();
+        /*-------------------红方初始化-------------------*/
+        this.chess_list.add(new Car(Team.red, 9, 0, getImage(Team.red, "车")));
+        /*-------------------黑方初始化-------------------*/
+
     }
 
     public void start()
@@ -126,13 +220,13 @@ public class ChessControl {
     {
         try
         {
-            switch (name)
+            switch (chess_name)
             {
                 case "车":
                     return ImageIO.read(new File("background.jpg"));
             }
         }
-        catch (IOException e)
+        catch (ImageNotFindExcept e)
         {
             e.printStackTrace();
 
