@@ -77,8 +77,6 @@ public final class ChessControl
     private MoveInfo info;
     /*悔棋是否合法*/
     private boolean retract_legal;
-    /*是否正确加载图片资源*/
-    private boolean succ_load;
     /*红方棋盘图片资源*/
     private BufferedImage red_map;
     /*黑方棋盘图片资源*/
