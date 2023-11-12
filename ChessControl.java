@@ -394,16 +394,17 @@ public final class ChessControl
 
     public void changeMapStyle(Team team, MapStyle style)
     {
+        String fun_name = "changeMapStyle";
         if (team == Team.red)
         {
             this.red_map = loadImg(map_dir + separator +style.toString() + separator + "map_red.jpg");
+
         }
         else
         {
-            /*黑方棋盘图片资源*/
             this.black_map = loadImg(map_dir + separator + style.toString() + separator + "map_black.jpg");
         }
-
+        log(Log.info, fun_name, team.toString() + "方切换棋盘风格：" + style.toString());
     }
 
     private Chess findChessNormal(String name, String where, String dir) throws ChessNotFindExcept

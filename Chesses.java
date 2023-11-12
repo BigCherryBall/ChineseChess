@@ -479,7 +479,7 @@ class Guard extends Chess
 
 
         this.info.new_x = this.pos.x + dx;
-        this.info.y = cow;
+        this.info.new_y = cow;
         /*命令ok，开始判断是否出界*/
         if (cow > 5 || cow < 3)
         {
