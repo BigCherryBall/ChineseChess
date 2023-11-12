@@ -7,11 +7,18 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 
-class CombineImages {
-   public static void main(int x, int y) {
+ class CombineImages {
+
+    public static void main(String[] args)
+    {
+       main1(0,0);
+    }
+   public static void main1(int x, int y) {
       try {
+         File back = new File("background.jpg");
+         System.out.println(back.getAbsolutePath());
          // 加载背景图
-         BufferedImage background = ImageIO.read(new File("background.jpg"));
+         BufferedImage background = ImageIO.read(back);
          
          // 加载a.png图片
          BufferedImage imageA = ImageIO.read(new File("a.png"));
@@ -36,10 +43,12 @@ class CombineImages {
          
          // 保存合并后的图片到c.jpg
          File output = new File("c.jpg");
-         ImageIO.write(combined, "jpg", output);
+         ImageIO.write(combined, "png", output);
          
          // 关闭Graphics2D对象
          g.dispose();
+
+         System.out.println("图片保存成功");
 
          
       } catch (IOException e) {

@@ -1,7 +1,6 @@
 package ChineseChess;
 
-import java.awt.image.BufferedImage;
-
+import static ChineseChess.Tool.log;
 
 /**
  * Horse马
@@ -130,14 +129,14 @@ class Horse extends Chess
         }
 
         this.info.new_x = this.pos.x + dx;
-        this.info.y = this.pos.y + dy;
+        this.info.new_y = this.pos.y + dy;
         return true;
     }
 
 
-    public Horse(Team team, int x, int y, BufferedImage img)
+    public Horse(Team team, int x, int y)
     {
-        super("马", team, new Vector2(x, y), img);
+        super("马", team, new Vector2(x, y));
     }
 
 }
@@ -147,18 +146,21 @@ class Horse extends Chess
  */
 class Car extends Chess
 {
-    public Car(Team team, int x, int y, BufferedImage image)
+    public Car(Team team, int x, int y)
     {
-        super("车", team, new Vector2(x, y), image);
+        super("车", team, new Vector2(x, y));
     }
 
 
     @Override
     public boolean isLegal(String dir, String where, Chess[][] map)
     {
+        int x = this.pos.x;
+        int y = this.pos.y;
         int cow = 0;
         int idx = 0;
         int dx = 0;
+
         if (dir.equals("平"))
         {
             cow = getCowByNum(where);
@@ -166,34 +168,35 @@ class Car extends Chess
             {
                 return false;
             }
-            else if (cow > this.pos.y)
+
+            if (cow > y)
             {
                 //路径上没有棋子
-                for (idx = this.pos.y + 1; idx < cow; idx++)
+                for (idx = y + 1; idx < cow; idx++)
                 {
-                    if (map[this.pos.x][idx] != null)
+                    if (map[x][idx] != null)
                     {
                         return false;
                     }
                 }
             }
-            else if (cow == this.pos.y)
+            else if (cow == y)
             {
                 return false;
             }
             else
             {
                 //路径上没有棋子
-                for (idx = this.pos.y - 1; idx > cow; idx--)
+                for (idx = y - 1; idx > cow; idx--)
                 {
-                    if (map[this.pos.x][idx] != null)
+                    if (map[x][idx] != null)
                     {
                         return false;
                     }
                 }
             }
 
-            this.info.new_x = this.pos.x;
+            this.info.new_x = x;
             this.info.new_y = cow;
             return true;
         }
@@ -204,36 +207,35 @@ class Car extends Chess
         }
         if ((dir.equals("进") && this.team.equals(Team.red)) || (dir.equals("退") && this.team.equals(Team.black)))
         {
-            if (this.pos.x - dx < 0)
+            if (x - dx < 0)
             {
                 return false;
             }
-            for (idx = this.pos.x - 1; idx > this.pos.x - dx; idx--)
+            for (idx = x - 1; idx > x - dx; idx--)
             {
-                if (map[idx][this.pos.y] != null)
+                if (map[idx][y] != null)
                 {
                     return false;
                 }
             }
-            this.info.new_x = this.pos.x - dx;
-            this.info.new_y = this.pos.y;
+            this.info.new_x = x - dx;
         }
-        else if ((dir.equals("退") && this.team.equals(Team.red)) || (dir.equals("进") && this.team.equals(Team.black)))
+        else
         {
-            if (this.pos.x + dx > 9)
+            if (x + dx > 9)
             {
                 return false;
             }
-            for (idx = this.pos.x + 1; idx < this.pos.x + dx; idx++)
+            for (idx = x + 1; idx < x + dx; idx++)
             {
-                if (map[idx][this.pos.y] != null)
+                if (map[idx][y] != null)
                 {
                     return false;
                 }
             }
-            this.info.new_x = this.pos.x + dx;
-            this.info.new_y = this.pos.y;
+            this.info.new_x = x + dx;
         }
+        this.info.new_y = y;
 
         return true;
     }
@@ -397,9 +399,9 @@ class Elephant extends Chess
         return true;
     }
 
-    public Elephant(Team team, int x, int y, BufferedImage image)
+    public Elephant(Team team, int x, int y)
     {
-        super(initName(team), team, new Vector2(x, y), image);
+        super(initName(team), team, new Vector2(x, y));
     }
 
     private static String initName(Team team)
@@ -494,9 +496,21 @@ class Guard extends Chess
         return true;
     }
 
-    public Guard(String name, Team team, int x, int y, BufferedImage image)
+    public Guard(Team team, int x, int y)
     {
-        super(name, team, new Vector2(x, y), image);
+        super(initName(team), team, new Vector2(x, y));
+    }
+
+    private static String initName(Team team)
+    {
+        if (team.equals(Team.red))
+        {
+            return "仕";
+        }
+        else
+        {
+            return "士";
+        }
     }
 }
 
@@ -509,6 +523,7 @@ class Artillery extends Chess
     @Override
     protected boolean isLegal(String dir, String where, Chess[][] map)
     {
+        String fun_name = "isLegal(炮)";
         int cow = 0;
         int dis = 0;
         int idx = 0;
@@ -528,7 +543,7 @@ class Artillery extends Chess
             /*查找路径上有几颗棋子*/
             if(cow > y)
             {
-                for (idx = y + 1;idx<cow;idx++)
+                for (idx = y + 1;idx < cow;idx++)
                 {
                     if(map[x][idx] != null)
                     {
@@ -538,7 +553,7 @@ class Artillery extends Chess
             }
             else if (cow < y)
             {
-                for (idx = cow + 1;idx<y;idx++)
+                for (idx = y - 1; idx > cow; idx--)
                 {
                     if(map[x][idx] != null)
                     {
@@ -550,12 +565,14 @@ class Artillery extends Chess
             {
                 return false;
             }
+            log(Log.debug, fun_name, "炮翻山为" + chess_count);
             /*判断路径上的棋子数量是否合法*/
             /*为0则终点不能有棋子*/
             if(chess_count ==0)
             {
                 if(map[x][cow] !=null)
                 {
+                    log(Log.debug, fun_name, "非法：翻山为0终点有棋子");
                     return false;
                 }
             }
@@ -564,12 +581,14 @@ class Artillery extends Chess
             {
                 if(map[x][cow] ==null)
                 {
+                    log(Log.debug, fun_name, "非法：翻山为1终点没有棋子");
                     return false;
                 }
             }
             /*超过1则不合法*/
             else
             {
+                log(Log.debug, fun_name, "非法：翻山超过1");
                 return false;
             }
             /*平只改变y坐标*/
@@ -594,51 +613,58 @@ class Artillery extends Chess
             /*是否移出棋盘*/
             if(x + dx < 0 || x + dx >9)
             {
+                log(Log.debug, fun_name, "非法：炮的目标点移出了棋盘");
                 return false;
             }
 
             /*查找路径上有几颗棋子*/
             if(dx > 0)
             {
-                for (idx = x + 1;idx<x + dx;idx++)
+                for (idx = x + 1; idx < x + dx; idx++)
                 {
                     if(map[idx][y] != null)
                     {
+                        log(Log.debug, fun_name, "炮翻过了" + map[idx][y].name);
                         chess_count++;
                     }
                 }
             }
             else
             {
-                for (idx = x + dx;idx<x;idx++)
+                for (idx = x - 1; idx > x + dx; idx--)
                 {
                     if(map[idx][y] != null)
                     {
+                        log(Log.debug, fun_name, "炮翻过了" + map[idx][y].name);
                         chess_count++;
                     }
                 }
             }
 
+            log(Log.debug, fun_name, "炮翻山为" + chess_count);
             /*判断路径上的棋子数量是否合法*/
             /*为0则终点不能有棋子*/
             if(chess_count ==0)
             {
                 if(map[x+dx][y] !=null)
                 {
+                    log(Log.debug, fun_name, "非法：翻山为0终点有棋子");
                     return false;
                 }
             }
             /*为1则终点有棋子*/
             else if (chess_count == 1)
             {
-                if(map[x + dx][y] ==null)
+                if(map[x + dx][y] == null)
                 {
+                    log(Log.debug, fun_name, "非法：翻山为1终点没有棋子");
                     return false;
                 }
             }
             /*超过1则不合法*/
             else
             {
+                log(Log.debug, fun_name, "非法：翻山超过了1");
                 return false;
             }
         }
@@ -648,9 +674,9 @@ class Artillery extends Chess
         return true;
     }
 
-    public Artillery(Team team, int x, int y, BufferedImage image)
+    public Artillery(Team team, int x, int y)
     {
-        super("炮", team, new Vector2(x, y), image);
+        super("炮", team, new Vector2(x, y));
     }
 }
 
@@ -716,9 +742,9 @@ class Soldier extends Chess
         return true;
     }
 
-    public Soldier(Team team, int x, int y, BufferedImage image)
+    public Soldier(Team team, int x, int y)
     {
-        super(initName(team), team, new Vector2(x,y), image);
+        super(initName(team), team, new Vector2(x,y));
     }
 
     private static String initName(Team team)
@@ -905,8 +931,8 @@ class Commander extends Chess
         }
     }
 
-    public Commander(Team team, Vector2 init_pos, BufferedImage image)
+    public Commander(Team team, int x , int y)
     {
-        super(initName(team), team, init_pos, image);
+        super(initName(team), team, new Vector2(x, y));
     }
 }

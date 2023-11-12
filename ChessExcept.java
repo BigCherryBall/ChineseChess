@@ -4,7 +4,7 @@ package ChineseChess;
  */
 class ChessExcept extends Exception 
 {
-    String msg;
+    protected String msg;
 
     public ChessExcept(String msg)
     {
@@ -12,8 +12,14 @@ class ChessExcept extends Exception
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return this.msg;
+    }
+
+    @Override
+    public final void printStackTrace()
+    {
+        System.out.println(this.msg);
     }
 }
 
@@ -44,9 +50,9 @@ class ChessNotFindExcept extends ChessExcept
 }
  
 
-class BackExcept extends ChessExcept
+class RetractExcept extends ChessExcept
 {
-    public BackExcept()
+    public RetractExcept()
     {
         super("当前步不是最新步，无法悔棋");
     }
