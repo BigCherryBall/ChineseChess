@@ -1,11 +1,11 @@
-package ChineseChess;
+package ChineseChess.Core;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
-import static ChineseChess.Tool.*;
+import static ChineseChess.Core.Tool.*;
 
 public abstract class Chess
 {

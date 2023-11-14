@@ -1,4 +1,4 @@
-package ChineseChess;
+package ChineseChess.Core;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

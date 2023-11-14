@@ -1,4 +1,4 @@
-package ChineseChess;
+package ChineseChess.Core;
 /**
  * ChessExcept
  */

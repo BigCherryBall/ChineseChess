@@ -1,4 +1,4 @@
-package ChineseChess;
+package ChineseChess.Core;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ChineseChess.Tool.*;
+import static ChineseChess.Core.Tool.*;
 
 
 public final class ChessControl

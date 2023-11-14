@@ -1,6 +1,6 @@
-package ChineseChess;
+package ChineseChess.Core;
 
-import static ChineseChess.Tool.log;
+import static ChineseChess.Core.Tool.log;
 
 /**
  * Horse马

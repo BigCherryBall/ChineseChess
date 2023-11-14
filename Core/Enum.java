@@ -1,22 +1,6 @@
-package ChineseChess;
+package ChineseChess.Core;
 
-enum Team
-{
-    red("红"),
-    black("黑");
 
-    private String name;
-    
-    private Team(String name)
-    {
-        this.name = name;
-    }
-
-    public String toString()
-    {
-        return this.name;
-    }
-}
 
 enum Turn
 {
@@ -36,15 +20,7 @@ enum Turn
     }
 }
 
-enum State
-{
-    /*还未初始化*/
-    init,
-    /*等待棋手加入*/
-    prepare,
-    /*棋局已经开始*/
-    began
-}
+
 
 enum MapStyle
 {
