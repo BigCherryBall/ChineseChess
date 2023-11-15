@@ -7,7 +7,7 @@ public class ResponseInfo
     * @author: BigCherryBall
     * @time: 2023/11/14 21:54
     */
-    public int state;
+    public ResponseType type;
 
     public String msg;
 }

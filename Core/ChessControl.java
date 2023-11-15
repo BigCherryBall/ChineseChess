@@ -127,7 +127,7 @@ public final class ChessControl
         this.black_begin = loadImg(remind_dir + separator + "默认" + separator + "black_begin.png");
         this.black_end = loadImg(remind_dir + separator + "默认" + separator + "black_end.png");
         /*输出图片*/
-       this.out_img = new File(out_dir + separator + seed + ".jpg");
+        this.out_img = new File(out_dir + separator + seed + ".jpg");
 
 
 
@@ -216,6 +216,8 @@ public final class ChessControl
         this.black_use_time = 0;
         /*赢家*/
         this.winner = null;
+        /*画初始棋盘*/
+        this.drawMap();
 
     }
 
