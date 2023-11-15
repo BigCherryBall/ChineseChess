@@ -338,15 +338,18 @@ public final class ChessControl
             graphics.drawImage(this.black_map, 0 , 0, null);
         }
         /*---------------再画提示----------------*/
-        if (this.turn == Turn.red)
+        if(this.info != null)
         {
-            graphics.drawImage(this.black_begin, 8 + this.info.y * 80, 18 + this.info.x * 80, null);
-            graphics.drawImage(this.black_end, 4 + this.info.new_y * 80, 14 + this.info.new_x * 80, null);
-        }
-        else
-        {
-            graphics.drawImage(this.red_begin, 8 + (8 - this.info.y) * 80, 18 + (9 - this.info.x) * 80, null);
-            graphics.drawImage(this.red_end, 4 + (8 - this.info.new_y) * 80, 14 + (9 - this.info.new_x) * 80, null);
+            if (this.turn == Turn.red)
+            {
+                graphics.drawImage(this.black_begin, 8 + this.info.y * 80, 18 + this.info.x * 80, null);
+                graphics.drawImage(this.black_end, 4 + this.info.new_y * 80, 14 + this.info.new_x * 80, null);
+            }
+            else
+            {
+                graphics.drawImage(this.red_begin, 8 + (8 - this.info.y) * 80, 18 + (9 - this.info.x) * 80, null);
+                graphics.drawImage(this.red_end, 4 + (8 - this.info.new_y) * 80, 14 + (9 - this.info.new_x) * 80, null);
+            }
         }
 
         /*---------------最后棋子----------------*/
