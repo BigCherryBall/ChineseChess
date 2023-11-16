@@ -275,14 +275,14 @@ public final class ChessAdaptor
             return false;
         }
 
-        if(this.control == null || control.state == State.init)
+        if(this.current == null || this.current.control.state == State.init)
         {
             this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}初始化棋局后才能加入");
             return true;
         }
 
         everyChess = this.dic.get(msg.group);
-        if(this.control.state == State.began)
+        if(this.current.control.state == State.began)
         {
             this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + everyChess.getPlayerMsg());
             return true;
