@@ -177,7 +177,6 @@ public final class ChessAdaptor
         response = new ResponseInfo();
         deals = new CmdDeal[]
                 {
-                        this::newChess,
                         this::add,
                         this::exit,
                         this::giveUp,
@@ -190,12 +189,15 @@ public final class ChessAdaptor
                         this::blindChess,
                         this::getMap
                 };
+        this.current = null;
     }
     private Map<String, EveryChess> dic;
 
     private ResponseInfo response;
 
     private CmdDeal[] deals;
+
+    private EveryChess current;
 
     /**
     * @description:
@@ -210,6 +212,20 @@ public final class ChessAdaptor
         {
             this.buildResponse(ResponseType.error_text, "错误，参数错误");
             return this.response;
+        }
+
+        /*新建棋局单独判断*/
+        if(this.newChess(msg) || this.newChessSpecial(msg))
+        {
+            return this.response;
+        }
+
+        /*可以通过this.current来判断群组有没有初始化棋局*/
+        this.current = null;
+        if(this.dic.containsKey(msg.group))
+        {
+            this.current = this.dic.get(msg.group);
+            
         }
 
         /*开始逐条匹配命令*/
@@ -250,7 +266,6 @@ public final class ChessAdaptor
     }
     private boolean add(RequestInfo msg)
     {
-        ChessControl control = null;
         EveryChess everyChess = null;
         Player new_player = null;
         int sender_idx = -1;
@@ -260,15 +275,14 @@ public final class ChessAdaptor
             return false;
         }
 
-        control = this.getControl(msg);
-        if(control == null || control.state == State.init)
+        if(this.control == null || control.state == State.init)
         {
             this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}初始化棋局后才能加入");
             return true;
         }
 
         everyChess = this.dic.get(msg.group);
-        if(control.state == State.began)
+        if(this.control.state == State.began)
         {
             this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + everyChess.getPlayerMsg());
             return true;
@@ -454,18 +468,6 @@ public final class ChessAdaptor
             }
         }
         return -1;
-    }
-
-    private ChessControl getControl(RequestInfo msg)
-    {
-        if(this.dic.containsKey(msg.group))
-        {
-            return this.dic.get(msg.group).control;
-        }
-        else
-        {
-            return null;
-        }
     }
 
     private EveryChess getEveryChess(RequestInfo msg)
