@@ -208,7 +208,7 @@ public final class ChessAdaptor
     {
         if (msg == null || msg.cmd == null || msg.id == null || msg.group == null)
         {
-            this.buildResponse(ResponseType.error, "错误，参数错误");
+            this.buildResponse(ResponseType.error_text, "错误，参数错误");
             return this.response;
         }
 
@@ -263,14 +263,14 @@ public final class ChessAdaptor
         control = this.getControl(msg);
         if(control == null || control.state == State.init)
         {
-            this.buildResponse(ResponseType.info, "棋局还没有初始化，发送{中国象棋}初始化棋局后才能加入");
+            this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}初始化棋局后才能加入");
             return true;
         }
 
         everyChess = this.dic.get(msg.group);
         if(control.state == State.began)
         {
-            this.buildResponse(ResponseType.info, "棋局已经开始，快来观战吧：\n" + everyChess.getPlayerMsg());
+            this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + everyChess.getPlayerMsg());
             return true;
         }
         else
@@ -278,18 +278,18 @@ public final class ChessAdaptor
             sender_idx = this.getSenderIdx(msg);
             if(sender_idx >= 0)
             {
-                this.buildResponse(ResponseType.info, everyChess.players[sender_idx].name + "，你已经加入了棋局，耐心等待其他棋手吧！");
+                this.buildResponse(ResponseType.info_text, everyChess.players[sender_idx].name + "，你已经加入了棋局，耐心等待其他棋手吧！");
                 return true;
             }
 
             new_player = everyChess.add(msg.id, msg.name);
             if(msg.name == null)
             {
-                this.buildResponse(ResponseType.info, msg.id + "，加入成功，你执" + new_player.team);
+                this.buildResponse(ResponseType.info_text, msg.id + "，加入成功，你执" + new_player.team);
             }
             else
             {
-                this.buildResponse(ResponseType.info, msg.name + "，你已经加入了棋局" + new_player.team);
+                this.buildResponse(ResponseType.info_text, msg.name + "，你已经加入了棋局" + new_player.team);
             }
             
             return true;
@@ -377,17 +377,17 @@ public final class ChessAdaptor
                 if(state == State.init || (state == State.prepare && every_chess.has_add_count == 0))
                 {
                     //这里填充everychess换人的代码
-                    this.buildResponse(ResponseType.info, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
+                    this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
                     return;
                 }
                 else if (state ==State.prepare)
                 {
-                    this.buildResponse(ResponseType.info, "本群组已经初始化了其他棋局，不能再初始化联棋");
+                    this.buildResponse(ResponseType.info_text, "本群组已经初始化了其他棋局，不能再初始化联棋");
                     return;
                 }
                 else if(state == State.began)
                 {
-                    this.buildResponse(ResponseType.info, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
+                    this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
                     return;
                 }
             }
@@ -398,11 +398,11 @@ public final class ChessAdaptor
                     every_chess.control.state = State.prepare;
                     if(player_count > 2)
                     {
-                        this.buildResponse(ResponseType.info, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
+                        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
                     }
                     else
                     {
-                        this.buildResponse(ResponseType.info, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
+                        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
                     }
 
                     return;
@@ -411,17 +411,17 @@ public final class ChessAdaptor
                 {
                     if (player_count > 2)
                     {
-                        this.buildResponse(ResponseType.info, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
+                        this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
                     }
                     else
                     {
-                        this.buildResponse(ResponseType.info, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
+                        this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
                     }
                     return;
                 }
                 else if(state == State.began)
                 {
-                    this.buildResponse(ResponseType.info, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
+                    this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
                     return;
                 }
             }
@@ -431,7 +431,7 @@ public final class ChessAdaptor
         every_chess.control.state = State.prepare;
         this.dic.put(msg.group, every_chess);
 
-        this.buildResponse(ResponseType.info, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
+        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
     }
 
     /**
