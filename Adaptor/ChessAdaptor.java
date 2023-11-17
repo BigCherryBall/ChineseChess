@@ -5,6 +5,7 @@ import ChineseChess.Core.ChessControl;
 import ChineseChess.Core.State;
 import ChineseChess.Core.Team;
 
+import java.io.File;
 import java.util.*;
 
 interface CmdDeal
@@ -21,27 +22,21 @@ final class Player
         this.id = id;
         this.name = name;
         this.team = team;
-        if(idx < 1)
-        {
-            this.idx = 0;
-        }
+        this.number = Math.max(0, idx);
     }
 
     public Player(Team team, int idx)
     {
-        this.id = "";
+        this.id = null;
         this.team = team;
-        this.name = "";
-        if(idx < 1)
-        {
-            this.idx = 0;
-        }
+        this.name = null;
+        this.number = Math.max(0, idx);
     }
     public String id;
     public String name;
     public final Team team;
 
-    public int idx;
+    public int number;
 
     public float use_time;
 
@@ -53,26 +48,33 @@ final class Player
 
     public String getMsgDetail()
     {
-        if (this.idx < 1)
+        if (this.number < 1)
         {
             return this.team.toString() + ":" + this.name;
         }
         else
         {
-            return this.team.toString() + this.idx + ":" + this.name;
+            return this.team.toString() + this.number + ":" + this.name;
         }
     }
 
     public String getMsg()
     {
-        if (this.idx < 1)
+        if (this.number < 1)
         {
             return this.team.toString();
         }
         else
         {
-            return this.team.toString() + this.idx;
+            return this.team.toString() + this.number;
         }
+    }
+
+    public void clear()
+    {
+        this.id = null;
+        this.name = null;
+        this.use_time = 0;
     }
 }
 
@@ -81,33 +83,8 @@ class EveryChess
 {
     public EveryChess(int player_count, String seed)
     {
-        int idx = 0;
         this.control = new ChessControl(seed);
-        this.player_count = player_count;
-
-        if(player_count % 2 == 1)
-        {
-            player_count += 1;
-        }
-        this.players = new Player[player_count];
-
-        if(player_count == 2)
-        {
-            this.players[0] = new Player(Team.red, 0);
-            this.players[1] = new Player(Team.black, 0);
-        }
-        for(idx = 0; idx < player_count; idx ++)
-        {
-            if (idx % 2 == 0)
-            {
-                this.players[idx] = new Player(Team.red, idx / 2 + 1);
-            }
-            else
-            {
-                this.players[idx] = new Player(Team.black, idx / 2 + 1);
-            }
-        }
-
+        this.initPlayers(player_count);
         this.random = new Random();
     }
 
@@ -119,7 +96,7 @@ class EveryChess
 
     public int has_add_count;
 
-    private Random random;
+    public Random random;
 
     public String getPlayerMsg()
     {
@@ -134,38 +111,31 @@ class EveryChess
         return result.toString();
     }
 
-    public void add(Team team, String id, String name, int location)
+    public void initPlayers(int count)
     {
-        this.has_add_count++;
-    }
+        int idx = 0;
+        this.player_count = count;
+        this.has_add_count = 0;
+        this.players = new Player[count];
 
-    public Player add(String id, String name)
-    {
-        ArrayList<Integer> empty = new ArrayList<>();
-        Player select = null;
-
-        for(int idx = 0;idx<this.player_count;idx++)
+        if(this.player_count == 2)
         {
-            String player_id = this.players[idx].id;
-            if (player_id.equals(id))
+            this.players[0] = new Player(Team.red, 0);
+            this.players[1] = new Player(Team.black, 0);
+            return;
+        }
+        for(idx = 0; idx < this.player_count; idx ++)
+        {
+            if (idx % 2 == 0)
             {
-                return null;
+                this.players[idx] = new Player(Team.red, idx / 2 + 1);
             }
-            else if(this.players[idx].id.equals(""))
+            else
             {
-                empty.add(idx);
+                this.players[idx] = new Player(Team.black, idx / 2 + 1);
             }
         }
-        
-        select = this.players[empty.get(this.random.nextInt(0, empty.size()))];
-        select.id = id;
-        if(name != null)
-        {
-            select.name = name;
-        }
-        return select;
     }
-
 }
 
 
@@ -208,9 +178,9 @@ public final class ChessAdaptor
     */
     public ResponseInfo cmd(RequestInfo msg)
     {
-        if (msg == null || msg.cmd == null || msg.id == null || msg.group == null)
+        if (msg == null || msg.cmd == null || msg.id == null || msg.group == null || msg.name == null)
         {
-            this.buildResponse(ResponseType.error_text, "错误，参数错误");
+            this.buildResponse(ResponseType.error_text, "错误，参数错误", null);
             return this.response;
         }
 
@@ -238,7 +208,7 @@ public final class ChessAdaptor
         }
 
         /*---------执行到这里就证明命令没有匹配到--------*/
-        this.buildResponse(ResponseType.none, "");
+        this.buildResponse(ResponseType.none, null, null);
         return this.response;
     }
 
@@ -266,8 +236,8 @@ public final class ChessAdaptor
     }
     private boolean add(RequestInfo msg)
     {
-        EveryChess everyChess = null;
-        Player new_player = null;
+
+        boolean add_succ = false;
         int sender_idx = -1;
 
         if(!(msg.cmd.equals("加入") || msg.cmd.equals("加入棋局")))
@@ -277,14 +247,13 @@ public final class ChessAdaptor
 
         if(this.current == null || this.current.control.state == State.init)
         {
-            this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}初始化棋局后才能加入");
+            this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}或者{联棋}初始化棋局后才能加入", null);
             return true;
         }
 
-        everyChess = this.dic.get(msg.group);
         if(this.current.control.state == State.began)
         {
-            this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + everyChess.getPlayerMsg());
+            this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + this.current.getPlayerMsg(), null);
             return true;
         }
         else
@@ -292,19 +261,20 @@ public final class ChessAdaptor
             sender_idx = this.getSenderIdx(msg);
             if(sender_idx >= 0)
             {
-                this.buildResponse(ResponseType.info_text, everyChess.players[sender_idx].name + "，你已经加入了棋局，耐心等待其他棋手吧！");
+                this.buildResponse(ResponseType.info_text, this.current.players[sender_idx].name + "，你已经加入了棋局，耐心等待其他棋手吧！", null);
                 return true;
             }
-
-            new_player = everyChess.add(msg.id, msg.name);
+        ///需要改
+            add_succ = this.addPlayer(msg);
             if(msg.name == null)
             {
-                this.buildResponse(ResponseType.info_text, msg.id + "，加入成功，你执" + new_player.team);
+                this.buildResponse(ResponseType.info_text, msg.id + "，加入成功，你执" , null);
             }
             else
             {
-                this.buildResponse(ResponseType.info_text, msg.name + "，你已经加入了棋局" + new_player.team);
+                this.buildResponse(ResponseType.info_text, msg.name + "，你已经加入了棋局" , null);
             }
+            ///
             
             return true;
         }
@@ -312,11 +282,68 @@ public final class ChessAdaptor
 
     private boolean exit(RequestInfo msg)
     {
+        Player sender = null;
+        int sender_idx = -1;
+
+        if(!(msg.cmd.equals("退出棋局")))
+        {
+            return false;
+        }
+
+        if(this.current == null)
+        {
+            this.buildResponse(ResponseType.none, null, null);
+            return true;
+        }
+
+        sender_idx =  this.getSenderIdx(msg);
+        if(sender_idx < 0)
+        {
+            this.buildResponse(ResponseType.none, null, null);
+            return true;
+        }
+
+        sender = this.current.players[sender_idx];
+        this.buildResponse(ResponseType.info_text, sender.name  + "，退出成功", null);
+        sender.clear();
+        this.current.has_add_count--;
+        
         return true;
     }
 
     private boolean giveUp(RequestInfo msg)
     {
+        int sender_idx = -1;
+        Player sender = null;
+        StringBuffer result = new StringBuffer();
+
+        if(!(msg.cmd.equals("认输") || msg.cmd.equals("投降")))
+        {
+            return false;
+        }
+
+        if(this.current == null || this.current.control.state != State.began)
+        {
+            this.buildResponse(ResponseType.none, null, null);
+            return true;
+        }
+
+        sender_idx = this.getSenderIdx(msg);
+        if(sender_idx < 0)
+        {
+            this.buildResponse(ResponseType.none, null, null);
+            return true;
+        }
+
+        sender = this.current.players[sender_idx];
+
+        if(this.current.player_count == 2)
+        {
+            result.append(sender.team.toString()).append("方(").append(sender.name).append(")认输，恭喜")
+                    .append(this.current.players[1 - sender_idx].name).append("获得胜利");
+            this.buildResponse(ResponseType.none, result.toString(), null);
+            return true;
+        }
         return true;
     }
 
@@ -373,79 +400,81 @@ public final class ChessAdaptor
 
     }
 
-    private void buildResponse(ResponseType type, String msg)
+    private void buildResponse(ResponseType type, String msg, File image)
     {
         this.response.msg = msg;
         this.response.type = type;
+        this.response.image = image;
     }
 
     private void answerChangeChess(RequestInfo msg, int player_count)
     {
-        if (this.dic.containsKey(msg.group))
+        if (this.current == null)
         {
-            EveryChess every_chess = this.dic.get(msg.group);
-            State state = every_chess.control.state;
+            EveryChess every_chess = new EveryChess(player_count, msg.group);
+            every_chess.control.state = State.prepare;
+            this.dic.put(msg.group, every_chess);
 
-            if(player_count != every_chess.player_count)
-            {
-                if(state == State.init || (state == State.prepare && every_chess.has_add_count == 0))
-                {
-                    //这里填充everychess换人的代码
-                    this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
-                    return;
-                }
-                else if (state ==State.prepare)
-                {
-                    this.buildResponse(ResponseType.info_text, "本群组已经初始化了其他棋局，不能再初始化联棋");
-                    return;
-                }
-                else if(state == State.began)
-                {
-                    this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
-                    return;
-                }
-            }
-            else
-            {
-                if(state == State.init)
-                {
-                    every_chess.control.state = State.prepare;
-                    if(player_count > 2)
-                    {
-                        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
-                    }
-                    else
-                    {
-                        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
-                    }
-
-                    return;
-                }
-                else if (state == State.prepare)
-                {
-                    if (player_count > 2)
-                    {
-                        this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
-                    }
-                    else
-                    {
-                        this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1");
-                    }
-                    return;
-                }
-                else if(state == State.began)
-                {
-                    this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg());
-                    return;
-                }
-            }
+            this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红", null);
+            return;
         }
 
-        EveryChess every_chess = new EveryChess(player_count, msg.group);
-        every_chess.control.state = State.prepare;
-        this.dic.put(msg.group, every_chess);
+        State state = this.current.control.state;
 
-        this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红");
+        if(player_count != this.current.player_count)
+        {
+            if(state == State.init || (state == State.prepare && this.current.has_add_count == 0))
+            {
+                this.current.initPlayers(player_count);
+                this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1", null);
+                return;
+            }
+            else if (state ==State.prepare)
+            {
+                this.buildResponse(ResponseType.info_text, "本群组已经初始化了其他棋局，不能再进行初始化操作", null);
+                return;
+            }
+            else if(state == State.began)
+            {
+                this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg(), null);
+                return;
+            }
+        }
+        else
+        {
+            if(state == State.init)
+            {
+                this.current.control.state = State.prepare;
+                if(player_count > 2)
+                {
+                    this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1", null);
+                }
+                else
+                {
+                    this.buildResponse(ResponseType.info_text, "棋局初始化成功，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红", null);
+                }
+
+                return;
+            }
+            else if (state == State.prepare)
+            {
+                if (player_count > 2)
+                {
+                    this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红}即可加入棋局执红", null);
+                }
+                else
+                {
+                    this.buildResponse(ResponseType.info_text, "棋局已经初始化，发送{加入棋局}即可加入游戏，发送{加入棋局 红1}即可加入棋局执红1", null);
+                }
+                return;
+            }
+            else if(state == State.began)
+            {
+                this.buildResponse(ResponseType.info_text, "棋局已经开始，快来观战吧：\n" + dic.get(msg.group).getPlayerMsg(), null);
+                return;
+            }
+        }
+        
     }
 
     /**
@@ -470,13 +499,29 @@ public final class ChessAdaptor
         return -1;
     }
 
-    private EveryChess getEveryChess(RequestInfo msg)
+    private boolean addPlayer(RequestInfo msg)
     {
-        return this.dic.get(msg.group);
+        ArrayList<Integer> empty = new ArrayList<>();
+        Player select = null;
+
+        for(int idx = 0;idx<this.current.player_count;idx++)
+        {
+            String player_id = this.current.players[idx].id;
+            if (player_id.equals(msg.id))
+            {
+                return false;
+            }
+            else if(this.current.players[idx].id == null)
+            {
+                empty.add(idx);
+            }
+        }
+        
+        select = this.current.players[empty.get(this.current.random.nextInt(0, empty.size()))];
+        select.id = msg.id;
+        select.name = msg.name;
+
+        return true;
     }
-
-
-
-
 
 }
