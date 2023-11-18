@@ -187,7 +187,8 @@ public final class ChessAdaptor
                         this::agree,
                         this::getMapStyle,
                         this::blindChess,
-                        this::getMap
+                        this::getMap,
+                        this::showCmd,
                 };
     }
     private final Map<String, EveryChess> dic;
@@ -902,6 +903,31 @@ public final class ChessAdaptor
         {
             return false;
         }
+    }
+
+    private boolean showCmd(RequestInfo msg)
+    {
+        if(!(msg.cmd.equals("命令大全") || msg.cmd.equals("象棋命令")))
+        {
+            return false;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("象棋命令如下（待完善）：\n");
+        builder.append("象棋命令：查看象棋命令大全\n");
+        builder.append("中国象棋：初始化棋局为普通的2人象棋\n");
+        builder.append("联棋：初始化棋局为4人象棋\n");
+        builder.append("加入棋局：加入到棋局中的随机某个空位置\n");
+        builder.append("加入棋局 红：加入到红方的某个空位置\n");
+        builder.append("加入棋局 黑1：加入到黑方，执第一手，以此类推\n");
+        builder.append("盲棋：加入棋局后，可用此命令开关盲棋。盲棋开则行棋不发送棋局图片。\n");
+        builder.append("棋盘：查看当前棋盘\n");
+        builder.append("悔棋：落子有悔\n");
+        builder.append("认输/投降：dalao，求饶\n");
+        builder.append("炮二平五/马8进7 等：行棋命令，遵从标注棋谱\n");
+        builder.append("退出棋局：加入棋局后棋局开始前，可以退出棋局");
+        this.buildResponse(ResponseType.info_text, builder.toString(), null);
+        return true;
     }
 
 }
