@@ -16,4 +16,16 @@ public enum Team
     {
         return this.name;
     }
+
+    public Turn toTurn()
+    {
+        if(this.name.equals("红"))
+        {
+            return Turn.red;
+        }
+        else
+        {
+            return Turn.black;
+        }
+    }
 }

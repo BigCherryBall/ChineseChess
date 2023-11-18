@@ -68,6 +68,8 @@ public final class ChessControl
     private long start_time;
     /*上一步结束的时间：ms*/
     private long last_step_end_time;
+    /*上一步所用时间：ms*/
+    public long last_step_use_time;
     /*红方用时总计：ms*/
     private long red_use_time;
     /*黑方用时总计：ms*/
@@ -88,7 +90,7 @@ public final class ChessControl
     private BufferedImage black_begin;
     private BufferedImage black_end;
     /*输出图片*/
-    private final File out_img;
+    public final File out_img;
 
 
 
@@ -210,6 +212,8 @@ public final class ChessControl
         this.start_time = System.currentTimeMillis();
         /*上一步结束的时间：ms*/
         this.last_step_end_time = this.start_time;
+        /*上一步所用时间：ms*/
+        this.last_step_use_time = 0;
         /*红方用时总计：ms*/
         this.red_use_time = 0;
         /*黑方用时总计：ms*/
@@ -268,16 +272,16 @@ public final class ChessControl
     public void over(Team winner)
     {
         String fun_name = "over";
-        long current = System.currentTimeMillis();
+        this.last_step_use_time = System.currentTimeMillis() -this.last_step_end_time;
 
         Tool.log(Log.info, fun_name, "over调用，棋局结束，winner = " + winner.toString());
         if (this.turn == Turn.red)
         {
-            this.red_use_time += current - this.last_step_end_time;
+            this.red_use_time += this.last_step_use_time;
         }
         else
         {
-            this.black_use_time += current - this.last_step_end_time;
+            this.black_use_time += this.last_step_use_time;
         }
         this.state = State.init;
         this.winner = winner;
@@ -287,15 +291,14 @@ public final class ChessControl
     {
         String fun_name = "retract";
         Chess moved = null;
-        int x = this.info.x;
-        int y = this.info.y;
+        int x = 0;
+        int y = 0;
 
         if(!this.retract_legal)
         {
             Tool.log(Log.info, fun_name, "悔棋失败：retract_legal=false");
             throw new RetractExcept();
         }
-        this.changeTurn();
 
         moved = this.map[this.info.new_x][this.info.new_y];
         if(moved == null)
@@ -303,6 +306,10 @@ public final class ChessControl
             Tool.log(Log.error, fun_name, "错误：已经移动的棋子为空");
             throw new RetractExcept();
         }
+
+        x = this.info.x;
+        y = this.info.y;
+        this.changeTurn();
 
         map[x][y] = moved;
         moved.updatePos(x, y);
@@ -314,6 +321,7 @@ public final class ChessControl
         this.info.new_y = y;
 
         this.retract_legal = false;
+        this.step --;
         Tool.log(Log.debug, fun_name, "悔棋成功,name = " + moved.name);
     }
 
@@ -553,18 +561,18 @@ public final class ChessControl
 
     private void goStep()
     {
-        long current = 0;
+        long current = System.currentTimeMillis();
 
         this.step += 1;
         this.retract_legal = true;
-        current = System.currentTimeMillis();
+        this.last_step_use_time = current - this.last_step_end_time;
         if (this.turn == Turn.red)
         {
-            this.red_use_time += current - this.last_step_end_time;
+            this.red_use_time +=  this.last_step_use_time;
         }
         else
         {
-            this.black_use_time += current - this.last_step_end_time;
+            this.black_use_time +=  this.last_step_use_time;
         }
         this.last_step_end_time = current;
 

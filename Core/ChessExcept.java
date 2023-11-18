@@ -2,7 +2,7 @@ package ChineseChess.Core;
 /**
  * ChessExcept
  */
-class ChessExcept extends Exception 
+public class ChessExcept extends Exception
 {
     protected String msg;
 
