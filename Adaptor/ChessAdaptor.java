@@ -442,18 +442,19 @@ public final class ChessAdaptor
 
     private boolean moveChess(RequestInfo msg)
     {
-        EveryChess current = this.dic.get(msg.group);
-        int sender_idx = -1;
         if(msg.cmd.length() != 4)
         {
             return false;
         }
-
         char dir = msg.cmd.charAt(2);
         if(dir != '进' && dir != '退' && dir != '平')
         {
             return false;
         }
+
+        EveryChess current = this.dic.get(msg.group);
+        int sender_idx = -1;
+        StringBuilder notice = null;
 
         if(current == null  || current.control.state != State.began)
         {
@@ -485,13 +486,65 @@ public final class ChessAdaptor
         }
 
         current.players[sender_idx].use_time += current.control.last_step_use_time;
-        if(current.control.blind_chess)
+
+        notice = new StringBuilder();
+        if(current.control.over)
         {
-            this.buildResponse(ResponseType.info_text, current.players[sender_idx].name + "，落子成功", null);
+            int temp = 1;
+            int idx = 1;
+            if(current.players[sender_idx].team == Team.red)
+            {
+                temp = 0;
+                idx = 0;
+            }
+
+            for (;temp < current.player_count;temp = temp + 2)
+            {
+                notice.append(current.players[temp].name);
+                if(temp < current.player_count - 2)
+                {
+                    notice.append("，");
+                }
+            }
+            notice.append("战胜了");
+
+            for (temp = 1 - idx;temp < current.player_count;temp = temp + 2)
+            {
+                notice.append(current.players[temp].name);
+                if(temp < current.player_count - 2)
+                {
+                    notice.append("，");
+                }
+            }
+            notice.append("！！！\n用时详情：\n");
+            for(Player player : current.players)
+            {
+                notice.append("->");
+                notice.append(player.name);
+                notice.append(":");
+                notice.append(getTimeStr(player.use_time));
+                notice.append("\n");
+            }
         }
         else
         {
-            this.buildResponse(ResponseType.image, null, current.control.out_img);
+            notice.append(current.players[sender_idx].name);
+            notice.append("，落子成功");
+        }
+        if(current.control.blind_chess)
+        {
+            this.buildResponse(ResponseType.info_text, notice.toString(), null);
+        }
+        else
+        {
+            if(current.control.over)
+            {
+                this.buildResponse(ResponseType.image_and_info, notice.toString(), current.control.out_img);
+            }
+            else
+            {
+                this.buildResponse(ResponseType.image, null, current.control.out_img);
+            }
         }
         return true;
     }
@@ -599,7 +652,7 @@ public final class ChessAdaptor
             this.buildResponse(ResponseType.none, null, null);
             return true;
         }
-        if(current.players[sender_idx].team.toTurn() == current.control.turn)
+        if(sender_idx == current.control.step % current.player_count)
         {
             this.buildResponse(ResponseType.info_text, "悔棋失败，该你行棋，现在不能悔棋", null);
         }
@@ -714,6 +767,30 @@ public final class ChessAdaptor
         return true;
     }
 
+    private boolean showCmd(RequestInfo msg)
+    {
+        if(!(msg.cmd.equals("命令大全") || msg.cmd.equals("象棋命令")))
+        {
+            return false;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("象棋命令如下（待完善）：\n");
+        builder.append("象棋命令：查看象棋命令大全\n");
+        builder.append("中国象棋：初始化棋局为普通的2人象棋\n");
+        builder.append("联棋：初始化棋局为4人象棋\n");
+        builder.append("加入棋局：加入到棋局中的随机某个空位置\n");
+        builder.append("加入棋局 红：加入到红方的某个空位置\n");
+        builder.append("加入棋局 黑1：加入到黑方，执第一手，以此类推\n");
+        builder.append("盲棋：加入棋局后，可用此命令开关盲棋。盲棋开则行棋不发送棋局图片。\n");
+        builder.append("棋盘：查看当前棋盘\n");
+        builder.append("悔棋：落子有悔\n");
+        builder.append("认输/投降：dalao，求饶\n");
+        builder.append("炮二平五/马8进7 等：行棋命令，遵从标注棋谱\n");
+        builder.append("退出棋局：加入棋局后棋局开始前，可以退出棋局");
+        this.buildResponse(ResponseType.info_text, builder.toString(), null);
+        return true;
+    }
     /*----------------匹配命令函数区结束----------------------*/
 
     private static String splitCmd(String cmd, int start, int end)
@@ -903,31 +980,6 @@ public final class ChessAdaptor
         {
             return false;
         }
-    }
-
-    private boolean showCmd(RequestInfo msg)
-    {
-        if(!(msg.cmd.equals("命令大全") || msg.cmd.equals("象棋命令")))
-        {
-            return false;
-        }
-
-        StringBuilder builder = new StringBuilder();
-        builder.append("象棋命令如下（待完善）：\n");
-        builder.append("象棋命令：查看象棋命令大全\n");
-        builder.append("中国象棋：初始化棋局为普通的2人象棋\n");
-        builder.append("联棋：初始化棋局为4人象棋\n");
-        builder.append("加入棋局：加入到棋局中的随机某个空位置\n");
-        builder.append("加入棋局 红：加入到红方的某个空位置\n");
-        builder.append("加入棋局 黑1：加入到黑方，执第一手，以此类推\n");
-        builder.append("盲棋：加入棋局后，可用此命令开关盲棋。盲棋开则行棋不发送棋局图片。\n");
-        builder.append("棋盘：查看当前棋盘\n");
-        builder.append("悔棋：落子有悔\n");
-        builder.append("认输/投降：dalao，求饶\n");
-        builder.append("炮二平五/马8进7 等：行棋命令，遵从标注棋谱\n");
-        builder.append("退出棋局：加入棋局后棋局开始前，可以退出棋局");
-        this.buildResponse(ResponseType.info_text, builder.toString(), null);
-        return true;
     }
 
 }
