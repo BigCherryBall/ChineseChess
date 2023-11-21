@@ -8,19 +8,19 @@ import static ChineseChess.Core.Tool.log;
 class Horse extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         int cow = getCowByNum(where);
         int dy = cow - this.pos.y;
         int dx = 0;
 
         //马不可以平,也不可以越界
-        if (dir.equals("平") || cow < 0)
+        if (dir == '平' || cow < 0)
         {
             return false;
         }
         //进
-        else if ((dir.equals("进") && this.team.equals(Team.red)) || (dir.equals("退") && this.team.equals(Team.black)))
+        else if ((dir == '进' && this.team.equals(Team.red)) || (dir == '退' && this.team.equals(Team.black)))
         {
             if (this.pos.x < 1)
             {
@@ -74,7 +74,7 @@ class Horse extends Chess
             }
         }
 
-        else if ((dir.equals("退") && this.team.equals(Team.red)) || (dir.equals("进") && this.team.equals(Team.black)))
+        else if ((dir == '退' && this.team.equals(Team.red)) || (dir == '进' && this.team.equals(Team.black)))
         {
             if (this.pos.x > 8)
             {
@@ -136,7 +136,7 @@ class Horse extends Chess
 
     public Horse(Team team, int x, int y)
     {
-        super("马", team, new Vector2(x, y));
+        super('马', team, new Vector2(x, y));
     }
 
 }
@@ -148,12 +148,12 @@ class Car extends Chess
 {
     public Car(Team team, int x, int y)
     {
-        super("车", team, new Vector2(x, y));
+        super('车', team, new Vector2(x, y));
     }
 
 
     @Override
-    public boolean isLegal(String dir, String where, Chess[][] map)
+    public boolean isLegal(char dir, char where, Chess[][] map)
     {
         int x = this.pos.x;
         int y = this.pos.y;
@@ -161,7 +161,7 @@ class Car extends Chess
         int idx = 0;
         int dx = 0;
 
-        if (dir.equals("平"))
+        if (dir == '平')
         {
             cow = getCowByNum(where);
             if (cow < 0)
@@ -205,7 +205,7 @@ class Car extends Chess
         {
             return false;
         }
-        if ((dir.equals("进") && this.team.equals(Team.red)) || (dir.equals("退") && this.team.equals(Team.black)))
+        if ((dir == '进' && this.team.equals(Team.red)) || (dir == '退' && this.team.equals(Team.black)))
         {
             if (x - dx < 0)
             {
@@ -250,19 +250,19 @@ class Car extends Chess
 class Elephant extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         int cow = getCowByNum(where);
         int dy = cow - this.pos.y;
         int dx = 0;
 
         //象不可以平,也不可以越界
-        if (dir.equals("平") || cow < 0)
+        if (dir == '平' || cow < 0)
         {
             return false;
         }
         //进
-        if (dir.equals("进") && this.team.equals(Team.red))
+        if (dir == '进' && this.team.equals(Team.red))
         {
             dx = -2;
             if (dy == 2)
@@ -288,7 +288,7 @@ class Elephant extends Chess
                 return false;
             }
         }
-        else if (dir.equals("退") && this.team.equals(Team.red))
+        else if (dir == '退' && this.team.equals(Team.red))
         {
             if (this.pos.x > 7)
             {
@@ -318,7 +318,7 @@ class Elephant extends Chess
                 return false;
             }
         }
-        else if (dir.equals("进") && this.team.equals(Team.black))
+        else if (dir == '进' && this.team.equals(Team.black))
         {
             dx = 2;
             if (dy == 2)
@@ -344,7 +344,7 @@ class Elephant extends Chess
                 return false;
             }
         }
-        else if (dir.equals("退") && this.team.equals(Team.black))
+        else if (dir == '退' && this.team.equals(Team.black))
         {
             if (this.pos.x < 2)
             {
@@ -404,15 +404,15 @@ class Elephant extends Chess
         super(initName(team), team, new Vector2(x, y));
     }
 
-    private static String initName(Team team)
+    private static char initName(Team team)
     {
         if (team.equals(Team.red))
         {
-            return "相";
+            return '相';
         }
         else
         {
-            return "象";
+            return '象';
         }
     }
 }
@@ -424,7 +424,7 @@ class Elephant extends Chess
 class Guard extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         int cow = getCowByNum(where);
         int dy = cow - this.pos.y;
@@ -435,14 +435,14 @@ class Guard extends Chess
             return false;
         }
         //仕不可以平,也不可以越界
-        if (dir.equals("平") || cow < 0)
+        if (dir == '平' || cow < 0)
         {
             return false;
         }
 
         if (this.team.equals(Team.red))
         {
-            if (dir.equals("进"))
+            if (dir == '进')
             {
                 if (this.pos.x < 1)
                 {
@@ -460,7 +460,7 @@ class Guard extends Chess
         }
         else
         {
-            if (dir.equals("退"))
+            if (dir == '退')
             {
                 if (this.pos.x < 1)
                 {
@@ -501,15 +501,15 @@ class Guard extends Chess
         super(initName(team), team, new Vector2(x, y));
     }
 
-    private static String initName(Team team)
+    private static char initName(Team team)
     {
         if (team.equals(Team.red))
         {
-            return "仕";
+            return '仕';
         }
         else
         {
-            return "士";
+            return '士';
         }
     }
 }
@@ -521,7 +521,7 @@ class Guard extends Chess
 class Artillery extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         String fun_name = "isLegal(炮)";
         int cow = 0;
@@ -533,7 +533,7 @@ class Artillery extends Chess
         int y = this.pos.y;
         int chess_count = 0;
 
-        if(dir.equals("平"))
+        if(dir == '平')
         {
             cow = getCowByNum(where);
             if (cow<0)
@@ -602,7 +602,7 @@ class Artillery extends Chess
                 return false;
             }
             /*进退只改变x坐标*/
-            if ((this.team.equals(Team.red) && dir.equals("进")) || (this.team.equals(Team.black) && dir.equals("退")))
+            if ((this.team.equals(Team.red) && dir == '进') || (this.team.equals(Team.black) && dir == '退'))
             {
                 dx = -dis;
             }
@@ -676,14 +676,14 @@ class Artillery extends Chess
 
     public Artillery(Team team, int x, int y)
     {
-        super("炮", team, new Vector2(x, y));
+        super('炮', team, new Vector2(x, y));
     }
 }
 
 class Soldier extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         int cow = 0;
         int dis = 0;
@@ -691,11 +691,11 @@ class Soldier extends Chess
         int dy = 0;
         int x = this.pos.x;
         int y = this.pos.y;
-        if(dir.equals("退"))
+        if(dir == '退')
         {
             return false;
         }
-        else if (dir.equals("平"))
+        else if (dir == '平')
         {
             cow = getCowByNum(where);
             if(cow < 0)
@@ -747,15 +747,15 @@ class Soldier extends Chess
         super(initName(team), team, new Vector2(x,y));
     }
 
-    private static String initName(Team team)
+    private static char initName(Team team)
     {
         if (team.equals(Team.red))
         {
-            return  "兵";
+            return  '兵';
         }
         else
         {
-            return  "卒";
+            return  '卒';
         }
     }
 
@@ -765,7 +765,7 @@ class Soldier extends Chess
 class Commander extends Chess
 {
     @Override
-    protected boolean isLegal(String dir, String where, Chess[][] map)
+    protected boolean isLegal(char dir, char where, Chess[][] map)
     {
         int cow = 0;
         int dis = 0;
@@ -776,7 +776,7 @@ class Commander extends Chess
         int idx = 0;
         boolean out = false;
 
-        if (dir.equals("平"))
+        if (dir == '平')
         {
             cow = getCowByNum(where);
             if(cow < 0)
@@ -796,7 +796,7 @@ class Commander extends Chess
             }
         }
         /*"进"的情况*/
-        else if(dir.equals("进"))
+        else if(dir == '进')
         {
             dis = getDisByNum(where);
             if(this.team.equals(Team.red))
@@ -806,7 +806,7 @@ class Commander extends Chess
                 {
                     /*对脸笑*/
                     int row = x - dis;
-                    if(row < 0 || map[row][y] == null || !map[row][y].name.equals("将"))
+                    if(row < 0 || map[row][y] == null || !(map[row][y].name == '将'))
                     {
                         return false;
                     }
@@ -845,7 +845,7 @@ class Commander extends Chess
                 {
                     /*对脸笑*/
                     int row = x + dis;
-                    if(row > 9 || map[row][y] == null || !map[row][y].name.equals("帅"))
+                    if(row > 9 || map[row][y] == null || !(map[row][y].name == '帅'))
                     {
                         return false;
                     }
@@ -919,15 +919,15 @@ class Commander extends Chess
         return true;
     }
 
-    private static String initName(Team team)
+    private static char initName(Team team)
     {
         if (team.equals(Team.red))
         {
-            return "帅";
+            return '帅';
         }
         else
         {
-            return "将";
+            return '将';
         }
     }
 

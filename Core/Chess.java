@@ -9,7 +9,7 @@ import static ChineseChess.Core.Tool.*;
 
 public abstract class Chess
 {
-    public Chess(String name, Team team, Vector2 init_pos)
+    public Chess(char name, Team team, Vector2 init_pos)
     {
         this.name = name;
         this.team = team;
@@ -23,7 +23,7 @@ public abstract class Chess
      * private静态变量
     ----------------------------------------*/
     /*棋子名*/
-    public String name;
+    public char name;
     /*棋子所属阵营*/
     public Team team;
     /*棋子位置坐标*/
@@ -39,7 +39,7 @@ public abstract class Chess
     /*棋子风格*/
     protected ChessStyle style;
 
-    public final MoveInfo move(String dir, String where, Chess[][] map) throws MoveExcept, CommandExcept
+    public final MoveInfo move(char dir, char where, Chess[][] map) throws MoveExcept, CommandExcept
     {
         String fun_name = "move";
         boolean is_legal = false;
@@ -75,7 +75,7 @@ public abstract class Chess
         return this.info;
     }
 
-    protected abstract boolean isLegal(String dir, String where, Chess[][] map);
+    protected abstract boolean isLegal(char dir, char where, Chess[][] map);
 
     protected final void changeStyle(ChessStyle style)
     {
@@ -100,15 +100,12 @@ public abstract class Chess
         this.pos.y = this.init_pos.y;
     }
 
-    public final int getCowByNum(String num)
+    public final int getCowByNum(char num)
     {
-        if (num == null)
-        {
-            return -1;
-        }
+
         switch (num)
         {
-            case "1", "一" ->
+            case '1', '一' ->
             {
                 if (this.team == Team.red)
                 {
@@ -119,7 +116,7 @@ public abstract class Chess
                     return 0;
                 }
             }
-            case "2", "二" ->
+            case '2', '二' ->
             {
                 if (this.team == Team.red)
                 {
@@ -130,7 +127,7 @@ public abstract class Chess
                     return 1;
                 }
             }
-            case "3", "三" ->
+            case '3', '三' ->
             {
                 if (this.team == Team.red)
                 {
@@ -141,7 +138,7 @@ public abstract class Chess
                     return 2;
                 }
             }
-            case "4", "四" ->
+            case '4', '四' ->
             {
                 if (this.team == Team.red)
                 {
@@ -152,11 +149,11 @@ public abstract class Chess
                     return 3;
                 }
             }
-            case "5", "五" ->
+            case '5', '五' ->
             {
                 return 4;
             }
-            case "6", "六" ->
+            case '6', '六' ->
             {
                 if (this.team == Team.red)
                 {
@@ -167,7 +164,7 @@ public abstract class Chess
                     return 5;
                 }
             }
-            case "7", "七" ->
+            case '7', '七' ->
             {
                 if (this.team == Team.red)
                 {
@@ -178,7 +175,7 @@ public abstract class Chess
                     return 6;
                 }
             }
-            case "8", "八" ->
+            case '8', '八' ->
             {
                 if (this.team == Team.red)
                 {
@@ -189,7 +186,7 @@ public abstract class Chess
                     return 7;
                 }
             }
-            case "9", "九" ->
+            case '9', '九' ->
             {
                 if (this.team == Team.red)
                 {
@@ -228,31 +225,31 @@ public abstract class Chess
         {
             switch (this.name)
             {
-                case "车" ->
+                case '车' ->
                 {
                     return this.combinedChessPath("rook.png");
                 }
-                case "马" ->
+                case '马' ->
                 {
                     return this.combinedChessPath("knight.png");
                 }
-                case "炮" ->
+                case '炮' ->
                 {
                     return this.combinedChessPath("cannon.png");
                 }
-                case "相", "象" ->
+                case '相', '象' ->
                 {
                     return this.combinedChessPath("elephant.png");
                 }
-                case "士", "仕" ->
+                case '士', '仕' ->
                 {
                     return this.combinedChessPath("mandarin.png");
                 }
-                case "兵", "卒" ->
+                case '兵', '卒' ->
                 {
                     return this.combinedChessPath("pawn.png");
                 }
-                case "帅", "将" ->
+                case '帅', '将' ->
                 {
                     return this.combinedChessPath("king.png");
                 }
@@ -294,32 +291,28 @@ public abstract class Chess
 
 
 
-    public static int getDisByNum(String num)
+    public static int getDisByNum(char num)
     {
         return switch (num)
                 {
-                    case "1", "一" -> 1;
-                    case "2", "二" -> 2;
-                    case "3", "三" -> 3;
-                    case "4", "四" -> 4;
-                    case "5", "五" -> 5;
-                    case "6", "六" -> 6;
-                    case "7", "七" -> 7;
-                    case "8", "八" -> 8;
-                    case "9", "九" -> 9;
+                    case '1', '一' -> 1;
+                    case '2', '二' -> 2;
+                    case '3', '三' -> 3;
+                    case '4', '四' -> 4;
+                    case '5', '五' -> 5;
+                    case '6', '六' -> 6;
+                    case '7', '七' -> 7;
+                    case '8', '八' -> 8;
+                    case '9', '九' -> 9;
                     default -> -1;
                 };
     }
 
-    public static int getCowByNum(Turn turn, String num)
+    public static int getCowByNum(Turn turn, char num)
     {
-        if (num == null)
-        {
-            return -1;
-        }
         switch (num)
         {
-            case "1", "一" ->
+            case '1', '一' ->
             {
                 if (turn == Turn.red)
                 {
@@ -330,7 +323,7 @@ public abstract class Chess
                     return 0;
                 }
             }
-            case "2", "二" ->
+            case '2', '二' ->
             {
                 if (turn == Turn.red)
                 {
@@ -341,7 +334,7 @@ public abstract class Chess
                     return 1;
                 }
             }
-            case "3", "三" ->
+            case '3', '三' ->
             {
                 if (turn == Turn.red)
                 {
@@ -352,7 +345,7 @@ public abstract class Chess
                     return 2;
                 }
             }
-            case "4", "四" ->
+            case '4', '四' ->
             {
                 if (turn == Turn.red)
                 {
@@ -363,11 +356,11 @@ public abstract class Chess
                     return 3;
                 }
             }
-            case "5", "五" ->
+            case '5', '五' ->
             {
                 return 4;
             }
-            case "6", "六" ->
+            case '6', '六' ->
             {
                 if (turn == Turn.red)
                 {
@@ -378,7 +371,7 @@ public abstract class Chess
                     return 5;
                 }
             }
-            case "7", "七" ->
+            case '7', '七' ->
             {
                 if (turn == Turn.red)
                 {
@@ -389,7 +382,7 @@ public abstract class Chess
                     return 6;
                 }
             }
-            case "8", "八" ->
+            case '8', '八' ->
             {
                 if (turn == Turn.red)
                 {
@@ -400,7 +393,7 @@ public abstract class Chess
                     return 7;
                 }
             }
-            case "9", "九" ->
+            case '9', '九' ->
             {
                 if (turn == Turn.red)
                 {

@@ -228,10 +228,10 @@ public final class ChessControl
     public void move(String cmd) throws ChessNotFindExcept, CommandExcept, MoveExcept
     {
         int check = 0;
-        String one;
-        String two;
-        String three;
-        String four;
+        char one;
+        char two;
+        char three;
+        char four;
         Chess chess = null;
 
         /*--------------------命令效验---------------------*/
@@ -242,10 +242,10 @@ public final class ChessControl
         }
 
         /*--------------------寻找棋子---------------------*/
-        one   = String.valueOf(cmd.charAt(0));
-        two   = String.valueOf(cmd.charAt(1));
-        three = String.valueOf(cmd.charAt(2));
-        four  = String.valueOf(cmd.charAt(3));
+        one   = cmd.charAt(0);
+        two   = cmd.charAt(1);
+        three = cmd.charAt(2);
+        four  = cmd.charAt(3);
         
         if(check == 2)
         {
@@ -420,7 +420,7 @@ public final class ChessControl
         log(Log.info, fun_name, team.toString() + "方切换棋盘风格：" + style.toString());
     }
 
-    private Chess findChessNormal(String name, String where, String dir) throws ChessNotFindExcept
+    private Chess findChessNormal(char name, char where, char dir) throws ChessNotFindExcept
     {
         String fun_name = "findChessNormal";
         /*匹配的第一颗棋子，兵很少一列超过两个，就不考虑了*/
@@ -440,7 +440,7 @@ public final class ChessControl
         for (idx = 0; idx < 10; idx++)
         {
             temp = this.map[idx][cow];
-            if(temp != null && temp.name.equals(name) && temp.team.name().equals(this.turn.name()))
+            if(temp != null && temp.name == name && temp.team.name().equals(this.turn.name()))
             {
                 if (chess1 == null)
                 {
@@ -462,7 +462,7 @@ public final class ChessControl
         }
         else if (chess2 != null)
         {
-            if((dir.equals("进") && this.turn == Turn.red) || (dir.equals("退") && this.turn == Turn.black))
+            if((dir == '进' && this.turn == Turn.red) || (dir == '退' && this.turn == Turn.black))
             {
                 return chess2;
             }
@@ -470,7 +470,7 @@ public final class ChessControl
         return chess1;
     }
 
-    private Chess findChessSpec(String dir, String name) throws ChessNotFindExcept
+    private Chess findChessSpec(char dir, char name) throws ChessNotFindExcept
     {
         String fun_name = "findChessSpec";
         Chess chess1 = null;
@@ -485,7 +485,7 @@ public final class ChessControl
             for(c = 0; c < 9; c++)
             {
                 temp = map[r][c];
-                if(temp != null && temp.name.equals(name) && temp.team.name().equals(this.turn.name()))
+                if(temp != null && temp.name == name && temp.team.name().equals(this.turn.name()))
                 {
                     if (chess1 == null)
                     {
@@ -508,7 +508,7 @@ public final class ChessControl
             throw new ChessNotFindExcept();
         }
 
-        if((dir.equals("前") && this.turn == Turn.black) || (dir.equals("后") && this.turn == Turn.red))
+        if((dir == '前' && this.turn == Turn.black) || (dir == '后' && this.turn == Turn.red))
         {
             log(Log.debug, fun_name, "返回棋子：" + chess2.name + chess2.pos.toString());
             return chess2;
@@ -577,7 +577,7 @@ public final class ChessControl
         this.last_step_end_time = current;
 
         /*--------------------如果是将帅---------------------*/
-        if(this.info.target != null && (this.info.target.name.equals("将") || this.info.target.name.equals("帅")))
+        if(this.info.target != null && (this.info.target.name == '将' || this.info.target.name == '帅'))
         {
             this.over(getTeam());
         }
