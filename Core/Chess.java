@@ -105,7 +105,8 @@ public abstract class Chess
 
         switch (num)
         {
-            case '1', '一' ->
+            case '1':
+            case '一':
             {
                 if (this.team == Team.red)
                 {
@@ -116,7 +117,8 @@ public abstract class Chess
                     return 0;
                 }
             }
-            case '2', '二' ->
+            case '2':
+            case '二':
             {
                 if (this.team == Team.red)
                 {
@@ -127,7 +129,8 @@ public abstract class Chess
                     return 1;
                 }
             }
-            case '3', '三' ->
+            case '3':
+            case '三':
             {
                 if (this.team == Team.red)
                 {
@@ -138,7 +141,8 @@ public abstract class Chess
                     return 2;
                 }
             }
-            case '4', '四' ->
+            case '4':
+            case '四':
             {
                 if (this.team == Team.red)
                 {
@@ -149,11 +153,13 @@ public abstract class Chess
                     return 3;
                 }
             }
-            case '5', '五' ->
+            case '5':
+            case '五':
             {
                 return 4;
             }
-            case '6', '六' ->
+            case '6':
+            case '六':
             {
                 if (this.team == Team.red)
                 {
@@ -164,7 +170,8 @@ public abstract class Chess
                     return 5;
                 }
             }
-            case '7', '七' ->
+            case '7':
+            case '七':
             {
                 if (this.team == Team.red)
                 {
@@ -175,7 +182,8 @@ public abstract class Chess
                     return 6;
                 }
             }
-            case '8', '八' ->
+            case '8':
+            case '八':
             {
                 if (this.team == Team.red)
                 {
@@ -186,7 +194,8 @@ public abstract class Chess
                     return 7;
                 }
             }
-            case '9', '九' ->
+            case '9':
+            case '九':
             {
                 if (this.team == Team.red)
                 {
@@ -197,7 +206,7 @@ public abstract class Chess
                     return 8;
                 }
             }
-            default ->
+            default:
             {
                 return -1;
             }
@@ -225,35 +234,39 @@ public abstract class Chess
         {
             switch (this.name)
             {
-                case '车' ->
+                case '车':
                 {
                     return this.combinedChessPath("rook.png");
                 }
-                case '马' ->
+                case '马':
                 {
                     return this.combinedChessPath("knight.png");
                 }
-                case '炮' ->
+                case '炮':
                 {
                     return this.combinedChessPath("cannon.png");
                 }
-                case '相', '象' ->
+                case '相':
+                case '象':
                 {
                     return this.combinedChessPath("elephant.png");
                 }
-                case '士', '仕' ->
+                case '士':
+                case '仕':
                 {
                     return this.combinedChessPath("mandarin.png");
                 }
-                case '兵', '卒' ->
+                case '兵':
+                case '卒':
                 {
                     return this.combinedChessPath("pawn.png");
                 }
-                case '帅', '将' ->
+                case '帅':
+                case '将':
                 {
                     return this.combinedChessPath("king.png");
                 }
-                default ->
+                default:
                 {
                     //this.succ_load = false;
                     return null;
@@ -293,26 +306,36 @@ public abstract class Chess
 
     public static int getDisByNum(char num)
     {
-        return switch (num)
-                {
-                    case '1', '一' -> 1;
-                    case '2', '二' -> 2;
-                    case '3', '三' -> 3;
-                    case '4', '四' -> 4;
-                    case '5', '五' -> 5;
-                    case '6', '六' -> 6;
-                    case '7', '七' -> 7;
-                    case '8', '八' -> 8;
-                    case '9', '九' -> 9;
-                    default -> -1;
-                };
+        switch (num)
+        {
+            case '1':
+            case '一': return 1;
+            case '2':
+            case '二': return 2;
+            case '3':
+            case '三': return 3;
+            case '4':
+            case '四': return 4;
+            case '5':
+            case '五': return 5;
+            case '6':
+            case '六': return 6;
+            case '7':
+            case '七': return 7;
+            case '8':
+            case '八': return 8;
+            case '9':
+            case '九': return 9;
+            default: return -1;
+        }
     }
 
     public static int getCowByNum(Turn turn, char num)
     {
         switch (num)
         {
-            case '1', '一' ->
+            case '1':
+            case '一':
             {
                 if (turn == Turn.red)
                 {
@@ -323,7 +346,8 @@ public abstract class Chess
                     return 0;
                 }
             }
-            case '2', '二' ->
+            case '2':
+            case '二':
             {
                 if (turn == Turn.red)
                 {
@@ -334,7 +358,8 @@ public abstract class Chess
                     return 1;
                 }
             }
-            case '3', '三' ->
+            case '3':
+            case '三':
             {
                 if (turn == Turn.red)
                 {
@@ -345,7 +370,8 @@ public abstract class Chess
                     return 2;
                 }
             }
-            case '4', '四' ->
+            case '4':
+            case '四':
             {
                 if (turn == Turn.red)
                 {
@@ -356,11 +382,13 @@ public abstract class Chess
                     return 3;
                 }
             }
-            case '5', '五' ->
+            case '5':
+            case '五':
             {
                 return 4;
             }
-            case '6', '六' ->
+            case '6':
+            case '六':
             {
                 if (turn == Turn.red)
                 {
@@ -371,7 +399,8 @@ public abstract class Chess
                     return 5;
                 }
             }
-            case '7', '七' ->
+            case '7':
+            case '七':
             {
                 if (turn == Turn.red)
                 {
@@ -382,7 +411,8 @@ public abstract class Chess
                     return 6;
                 }
             }
-            case '8', '八' ->
+            case '8':
+            case '八':
             {
                 if (turn == Turn.red)
                 {
@@ -393,7 +423,8 @@ public abstract class Chess
                     return 7;
                 }
             }
-            case '9', '九' ->
+            case '9':
+            case '九':
             {
                 if (turn == Turn.red)
                 {
@@ -404,7 +435,7 @@ public abstract class Chess
                     return 8;
                 }
             }
-            default ->
+            default:
             {
                 return -1;
             }
