@@ -285,6 +285,7 @@ public final class ChessControl
         }
         this.state = State.init;
         this.winner = winner;
+        this.over = true;
     }
 
     public void retract() throws RetractExcept
