@@ -247,13 +247,17 @@ public final class ChessControl
         three = cmd.charAt(2);
         four  = cmd.charAt(3);
         
+
+
         if(check == 2)
         {
+            two = this.rightChessName(two);
             chess = this.findChessSpec(one, two);
             
         }
         else
         {
+            one = this.rightChessName(one);
             chess = this.findChessNormal(one, two, three);
         }
 
@@ -600,6 +604,26 @@ public final class ChessControl
         }
     }
 
-
+    private char rightChessName(char name)
+    {
+        switch (name) {
+            case '象':
+            case '相':
+                if(this.turn == Turn.red) return '相';
+                else return '象';
+            case '兵':
+            case '卒':
+                if(this.turn == Turn.red) return '兵';
+                else return '卒';
+            
+            case '仕':
+            case '士':
+                if(this.turn == Turn.red) return '仕';
+                else return '士';
+        
+            default:
+                return name;
+        }
+    }
 
 }
