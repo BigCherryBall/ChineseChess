@@ -21,28 +21,6 @@ enum Turn
 }
 
 
-
-enum MapStyle
-{
-    defalt("默认"),
-    flower_dancer("花时舞者"),
-    mao_mao("清凉夏日");
-
-
-
-    private String name;
-    MapStyle(String name)
-    {
-        this.name = name;
-    }
-
-    @Override
-    public String toString()
-    {
-        return this.name;
-    }
-}
-
 enum ChessStyle
 {
     defalt("默认");

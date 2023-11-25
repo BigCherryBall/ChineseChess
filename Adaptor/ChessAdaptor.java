@@ -250,10 +250,10 @@ public final class ChessAdaptor
         this.answerChangeChess(msg, 4);
         return true;
     }
+
     private boolean add(RequestInfo msg)
     {
         EveryChess current = this.dic.get(msg.group);
-        boolean add_succ = false;
         String sub = null;
         String result = null;
         int idx = -1;
@@ -697,12 +697,60 @@ public final class ChessAdaptor
 
     private boolean getMapStyle(RequestInfo msg)
     {
-        return false;
+        if(!msg.cmd.equals("棋盘风格"))
+        {
+            return false;
+        }
+
+        this.buildResponse(ResponseType.info_text, "目前可选的棋盘样式如下：" + this.getMapStyle() + "\n 使用{切换棋盘 棋盘名}即可切换棋盘哦", null);
+        return true;
     }
 
     private boolean changeMapStyle(RequestInfo msg)
     {
-        return false;
+        if(!msg.cmd.startsWith("更换棋盘"))
+        {
+            return false;
+        }
+
+        EveryChess current = this.dic.get(msg.group);
+        int sender_idx = -1;
+        String sub = null;
+        Player player = null;
+        
+        if(current == null  || current.control.state == State.init)
+        {
+            this.buildResponse(ResponseType.info_text, "棋局还没有初始化，发送{中国象棋}或者{联棋}初始化棋局并且加入后才能设置棋盘样式", null);
+            return true;
+        }
+
+        sender_idx = getSenderIdx(msg);
+        if(sender_idx < 0)
+        {
+            this.buildResponse(ResponseType.none, null, null);
+            return true;
+        }
+
+        if(msg.cmd.length() <= 5 || msg.cmd.charAt(4) != ' ')
+        {
+            this.buildResponse(ResponseType.info_text, "命令不对，请使用{切换棋盘 棋盘名}切换棋盘，使用{棋盘风格}查看所有可选棋盘", null);
+            return true;
+        }
+
+        sub = msg.cmd.substring(5);
+        player = current.players[sender_idx];
+        for(String style : ChessControl.map_style)
+        {
+            if(style.equals(sub))
+            {
+                current.control.changeMapStyle(player.team, style);
+                this.buildResponse(ResponseType.info_text, player.name + "成功切换棋盘：" + style, null);
+                return true;
+            }
+        }
+
+        this.buildResponse(ResponseType.info_text, "棋盘样式{" + sub + "}不存在", null);
+        return true;
     }
 
     private boolean blindChess(RequestInfo msg)
@@ -980,6 +1028,19 @@ public final class ChessAdaptor
         {
             return false;
         }
+    }
+
+    private String getMapStyle()
+    {
+        StringBuilder builder = new StringBuilder();
+
+        for(String style : ChessControl.map_style)
+        {
+            builder.append('\n');
+            builder.append(style);
+        }
+        ChessControl.map_style.toString();
+        return builder.toString();
     }
 
 }

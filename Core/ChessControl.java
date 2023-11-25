@@ -23,6 +23,10 @@ public final class ChessControl
     private static final String special_cmd = "^[前后][车马炮象相仕士兵卒][进退平][1-9一二三四五六七八九]$";
     private static final Pattern special = Pattern.compile(special_cmd);
     /*--------------------------------------
+     * static公开变量
+    ----------------------------------------*/
+    public static String[] map_style = {"默认", "花时舞者", "清凉夏日",};
+    /*--------------------------------------
      * public成员变量
     ----------------------------------------*/
     /*如果开启，那么对于士象炮帅的移动可以走出固定区域，参考翻翻棋*/
@@ -40,9 +44,6 @@ public final class ChessControl
     /*--------
      * 以下变量在start方法中不重新赋值
      * -------*/
-    /*棋盘风格*/
-    public MapStyle red_map_style;
-    public MapStyle black_map_style;
     /*棋子风格*/
     public ChessStyle red_chess_style;
     public ChessStyle black_chess_style;
@@ -112,20 +113,17 @@ public final class ChessControl
         this.step = 0;
         /*随机名，用于图片命名；图片名称为seed.jpg*/
         this.seed = seed;
-        /*棋盘风格*/
-        this.red_map_style = MapStyle.defalt;
-        this.black_map_style = MapStyle.defalt;
         /*棋子风格*/
         this.red_chess_style = ChessStyle.defalt;
         this.black_chess_style = ChessStyle.defalt;
         /*是否盲棋*/
         this.blind_chess = false;
         /*红方棋盘图片资源*/
-        this.changeMapStyle(Team.red, MapStyle.defalt);
+        this.changeMapStyle(Team.red, "默认");
         this.red_begin = loadImg(remind_dir + separator + "默认" + separator + "red_begin.png");
         this.red_end = loadImg(remind_dir + separator + "默认" + separator + "red_end.png");
         /*黑方棋盘图片资源*/
-        this.changeMapStyle(Team.black, MapStyle.defalt);
+        this.changeMapStyle(Team.black, "默认");
         this.black_begin = loadImg(remind_dir + separator + "默认" + separator + "black_begin.png");
         this.black_end = loadImg(remind_dir + separator + "默认" + separator + "black_end.png");
         /*输出图片*/
@@ -410,19 +408,19 @@ public final class ChessControl
         return this.map;
     }
 
-    public void changeMapStyle(Team team, MapStyle style)
+    public void changeMapStyle(Team team, String style)
     {
         String fun_name = "changeMapStyle";
         if (team == Team.red)
         {
-            this.red_map = loadImg(map_dir + separator +style.toString() + separator + "map_red.jpg");
+            this.red_map = loadImg(map_dir + separator + style + separator + "map_red.jpg");
 
         }
         else
         {
-            this.black_map = loadImg(map_dir + separator + style.toString() + separator + "map_black.jpg");
+            this.black_map = loadImg(map_dir + separator + style + separator + "map_black.jpg");
         }
-        log(Log.info, fun_name, team.toString() + "方切换棋盘风格：" + style.toString());
+        log(Log.info, fun_name, team.toString() + "方切换棋盘风格：" + style);
     }
 
     private Chess findChessNormal(char name, char where, char dir) throws ChessNotFindExcept
