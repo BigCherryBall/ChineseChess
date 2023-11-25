@@ -835,7 +835,9 @@ public final class ChessAdaptor
         builder.append("悔棋：落子有悔\n");
         builder.append("认输/投降：dalao，求饶\n");
         builder.append("炮二平五/马8进7 等：行棋命令，遵从标注棋谱\n");
-        builder.append("退出棋局：加入棋局后棋局开始前，可以退出棋局");
+        builder.append("退出棋局：加入棋局后棋局开始前，可以退出棋局\n");
+        builder.append("棋盘风格：查看所有可选的棋盘样式\n");
+        builder.append("切换棋盘 棋盘名：你所在的一方使用某个样式的棋盘");
         this.buildResponse(ResponseType.info_text, builder.toString(), null);
         return true;
     }
