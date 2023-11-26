@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,10 +23,58 @@ public final class ChessControl
 
     private static final String special_cmd = "^[前后][车马炮象相仕士兵卒][进退平][1-9一二三四五六七八九]$";
     private static final Pattern special = Pattern.compile(special_cmd);
+
+    /* 默认棋盘名，有默认则为默认，没有默认则取map_style第一个 */
+    private static String default_map = "默认";
     /*--------------------------------------
      * static公开变量
     ----------------------------------------*/
-    public static String[] map_style = {"默认", "花时舞者", "清凉夏日",};
+    public static ArrayList<String> map_style = new ArrayList<>();
+    static
+    {
+        File folder = new File(map_dir);
+        boolean has_default = false;
+
+        if (folder.exists() && folder.isDirectory())
+        {
+            File[] files = folder.listFiles();
+            if (files != null)
+            {
+                for (File file : files)
+                {
+                    /* 判断是否为文件夹 */
+                    if (file.isDirectory())
+                    {
+                        map_style.add(file.getName());
+                        log(Log.info, "map_style", "成功加载棋盘：" + file.getName());
+                    }
+                }
+            }
+            else
+            {
+                log(Log.error, "map_style",  "出错了！{"  + map_dir + "}下没有任何棋盘！");
+            }
+        }
+
+        if(map_style.isEmpty())
+        {
+            log(Log.error, "map_style",  "出错了！{"  + map_dir + "}下没有任何棋盘！");
+        }
+
+        for(String style : map_style)
+        {
+            if(default_map.equals(style))
+            {
+                has_default = true;
+                break;
+            }
+        }
+        if(!has_default)
+        {
+            default_map = map_style.get(0);
+            log(Log.warn, "map_style",  map_dir + "下没有默认棋盘");
+        }
+    }
     /*--------------------------------------
      * public成员变量
     ----------------------------------------*/
@@ -119,11 +168,11 @@ public final class ChessControl
         /*是否盲棋*/
         this.blind_chess = false;
         /*红方棋盘图片资源*/
-        this.changeMapStyle(Team.red, "默认");
+        this.changeMapStyle(Team.red, default_map);
         this.red_begin = loadImg(remind_dir + separator + "默认" + separator + "red_begin.png");
         this.red_end = loadImg(remind_dir + separator + "默认" + separator + "red_end.png");
         /*黑方棋盘图片资源*/
-        this.changeMapStyle(Team.black, "默认");
+        this.changeMapStyle(Team.black, default_map);
         this.black_begin = loadImg(remind_dir + separator + "默认" + separator + "black_begin.png");
         this.black_end = loadImg(remind_dir + separator + "默认" + separator + "black_end.png");
         /*输出图片*/
