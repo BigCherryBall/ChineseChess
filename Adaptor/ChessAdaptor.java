@@ -702,13 +702,13 @@ public final class ChessAdaptor
             return false;
         }
 
-        this.buildResponse(ResponseType.info_text, "目前可选的棋盘样式如下：" + this.getMapStyle() + "\n 使用{切换棋盘 棋盘名}即可切换棋盘哦", null);
+        this.buildResponse(ResponseType.info_text, "目前可选的棋盘样式如下：" + this.getMapStyle() + "\n使用{更换棋盘 棋盘名}即可切换棋盘哦", null);
         return true;
     }
 
     private boolean changeMapStyle(RequestInfo msg)
     {
-        if(!msg.cmd.startsWith("更换棋盘"))
+        if(!(msg.cmd.startsWith("更换棋盘") || msg.cmd.startsWith("切换棋盘")))
         {
             return false;
         }
