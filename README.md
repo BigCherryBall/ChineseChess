@@ -59,34 +59,37 @@
 # 如何使用
 
 本包提供了各种对棋局进行操作的接口，但是没有让命令与接口关联，需要开发者自定义命令，并调用对应接口即可
+
 适配器已经完成：**你只需要调用一个接口就行**
+
 1.你需要new一个ChessAdaptor对象（见/Adaptor/ChessAdaptor.java）.
+
 2.你只需要调用ChessAdaptor.cmd()接口即可，接口的入参（/Adaptor/RequestInfo）和出参（/Adaptor/ResopnseInfo）
 
 -------------------------以下是过时版本--------------------
-~~## 1.Enum.java
-定义了一些棋盘类型，棋子类型，红黑方，棋盘状态的枚举~~
+## 1.Enum.java
+~~定义了一些棋盘类型，棋子类型，红黑方，棋盘状态的枚举~~
 
-~~## 2.ChessExcept.java
-定义了一些行棋过程中常见的异常：比如命令不正确，移动不正确等~~
+## 2.ChessExcept.java
+~~定义了一些行棋过程中常见的异常：比如命令不正确，移动不正确等~~
 
-~~## 3.ChessControl类
-该类定义了**对棋局进行操作的接口**，开发者需要为每一个棋局创建一个ChessControl对象~~
+## 3.ChessControl类
+~~该类定义了**对棋局进行操作的接口**，开发者需要为每一个棋局创建一个ChessControl对象~~
 
-~~### 3.1 棋局状态
-参见**Enum.java**文件中的**State**枚举，棋局有3种状态~~
+### 3.1 棋局状态
+~~参见**Enum.java**文件中的**State**枚举，棋局有3种状态~~
 
-~~**State.init**: 刚创建好ChessControl对象或者棋局结束后会处于这个状态，需要手动跳转到pre状态~~
+**State.init**: ~~刚创建好ChessControl对象或者棋局结束后会处于这个状态，需要手动跳转到pre状态~~
 
-~~**State.pre**: 棋局等待棋手加入中，棋手加入满则进入began状态~~
+**State.pre**: ~~棋局等待棋手加入中，棋手加入满则进入began状态~~
 
-~~**State.began**: 棋局正在对弈，对弈结束则进入init状态~~
-~~### 3.2 重要方法
-**ChessControl.start()**: 开始棋局，将棋子重置在初始位置，进入began状态，同时开始接受行棋命令。~~
+**State.began**: ~~棋局正在对弈，对弈结束则进入init状态~~
+### 3.2 重要方法
+**ChessControl.start()**: ~~开始棋局，将棋子重置在初始位置，进入began状态，同时开始接受行棋命令。~~
 
-~~**ChessControl.over()**: 结束棋局，同时统计用时等参数~~
+**ChessControl.over()**: ~~结束棋局，同时统计用时等参数~~
 
-~~**ChessControl.move(String cmd)**: 输入的是棋谱命令，对棋子进行移动操作，会弹出棋类异常，进行捕获可以查看异常信息：~~
+**ChessControl.move(String cmd)**: ~~输入的是棋谱命令，对棋子进行移动操作，会弹出棋类异常，进行捕获可以查看异常信息：~~
 
 ```
 ChessControl control = new ChessControl("test");
@@ -102,8 +105,8 @@ catch(ChessExcept e)
 }
 ```
 
-~~**ChessControl.retract()**: 悔棋~~
+**ChessControl.retract()**: ~~悔棋~~
 
-~~**ChessControl.changeMapStyle(Team team, MapStyle style)**: 更换棋盘风格，输入参数含义：哪一方更换什么风格~~
+**ChessControl.changeMapStyle(Team team, MapStyle style)**: ~~更换棋盘风格，输入参数含义：哪一方更换什么风格~~
 
 算了，干饭了，先这样
