@@ -15,8 +15,8 @@ package ChineseChess.Adaptor;
 public enum ResponseType
 {
     none,                        /*输入的命令不是本模块命令。返回：无*/
-    info_text,                   /*是本模块命令，成功执行。返回：文字信息*/
+    info_text,                   /*是本模块命令，执行结果视情况而定。返回：文字信息*/
     image,                       /*是本模块命令，成功执行。返回：图片*/
-    image_and_info,              /*是本模块命令。返回：图片+文字*/
-    info_and_image;              /*是本模块命令。返回：文字+图片*/
+    image_and_info,              /*是本模块命令，成功执行。返回：图片+文字*/
+    info_and_image;              /*是本模块命令，成功执行。返回：文字+图片*/
 }
