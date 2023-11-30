@@ -3,7 +3,7 @@ package ChineseChess.Adaptor;
 
 /**
 * @description: 响应类型。本模块响应结构体只存在两种：文字信息（ResponseInfo.msg），图片(ResponseInfo.image)。根据ResponseType的类型，从而确定返回的信息中取用哪个字段。
-* 例如，如果返回的ResponseInfo.type为error_text,那么ResponseInfo.msg就一定不是null，而image一定是null；
+* 例如，如果返回的ResponseInfo.type为info_text,那么ResponseInfo.msg就一定不是null，而image一定是null；
 *      如果返回的ResponseInfo.type为image,那么ResponseInfo.msg就一定是null，而image一定不是null；
 * image_and_info 和 info_and_image 的msg和image都不是null，这样区别的原因是告诉调用者优先使用文字还是图片。因为部分命令需要同时返回图片和文字，而两者顺序有讲究。
 * 例如： 最后一步棋时（绝杀）时，应当先发送棋局图片，然后再发送棋局结算文字信息，此时响应ResponseInfo.type = image_and_info
