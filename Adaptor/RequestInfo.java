@@ -2,7 +2,7 @@ package ChineseChess.Adaptor;
 
 public class RequestInfo
 {
-    /*---------必要参数，以下4个变量不能为null，否则会直接返回ResponseType = error_text---------*/
+    /*---------必要参数，以下4个变量不能为null，否则会直接返回ResponseType.none---------*/
     /*输入的命令，即发送者发出的文字消息*/
     public String cmd;
     /*发送这个消息的人的唯一辨识号，可以理解为QQ中的QQ号，微信中的微信号*/
